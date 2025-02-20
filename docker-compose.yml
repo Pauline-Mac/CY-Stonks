@@ -15,7 +15,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   backend:
-    build: .
+    build:
+      context: ./backend  # Indique que le Dockerfile est dans backend/
+      dockerfile: Dockerfile  # Nom du fichier Dockerfile
     container_name: cy_stonks_backend
     depends_on:
       - postgres
@@ -25,7 +27,11 @@ services:
       DATABASE_PASSWORD: "cytech0001"
     ports:
       - "9000:9000"
-    command: ["sbt", "runMain Main"]
+    volumes:
+      - ./backend:/app  # Monte uniquement le backend dans /app
+    working_dir: /app
+    command: [ "sbt", "runMain Main" ]
+
 
 volumes:
   postgres_data:
