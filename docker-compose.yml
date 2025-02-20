@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: cy_stonks_db
+    restart: always
+    environment:
+      POSTGRES_USER: cy_stonks_user
+      POSTGRES_PASSWORD: cytech0001
+      POSTGRES_DB: cy_stonks
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: cy_stonks_backend
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: "jdbc:postgresql://postgres:5432/cy_stonks"
+      DATABASE_USER: "cy_stonks_user"
+      DATABASE_PASSWORD: "cytech0001"
+    ports:
+      - "9000:9000"
+    command: ["sbt", "runMain Main"]
+
+volumes:
+  postgres_data:
+    driver: local
