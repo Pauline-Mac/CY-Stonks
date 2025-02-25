@@ -1,0 +1,13 @@
+[error] -- [E161] Naming Error: /app/src/main/scala/Main.scala:31:0 --------------------
+[error] 31 |object DataBaseControler {
+[error]    |^
+[error]    |DataBaseControler is already defined as object DataBaseControler in /app/DataBaseControler.scala
+[error] -- [E049] Reference Error: /app/src/main/scala/Main.scala:42:21 ----------------
+[error] 42 |    val connection = getConnection()
+[error]    |                     ^^^^^^^^^^^^^
+[error]    |                Reference to getConnection is ambiguous.
+[error]    |                It is both defined in object DataBaseControler$2
+[error]    |                and inherited subsequently in object DataBaseControler$2
+[error]    |
+[error]    | longer explanation available when compiling with `-explain`
+[error] two errors found

@@ -1,2 +1,17 @@
 [debug] Created transactional ClassFileManager with tempDir = /app/target/scala-3.3.5/classes.bak
+[debug] About to delete class files:
+[debug] 	DataBaseControler$.class
+[debug] 	DataBaseControler.class
+[debug] 	DataBaseControler$.tasty
+[debug] 	DataBaseControler.tasty
+[debug] We backup class files:
+[debug] 	DataBaseControler$.class
+[debug] 	DataBaseControler.class
+[debug] 	DataBaseControler$.tasty
+[debug] 	DataBaseControler.tasty
+[debug] Registering generated classes:
+[debug] 	DataBaseControler$.class
+[debug] 	DataBaseControler.class
+[debug] 	DataBaseControler$.tasty
+[debug] 	DataBaseControler.tasty
 [debug] Removing the temporary directory used for backing up class files: /app/target/scala-3.3.5/classes.bak

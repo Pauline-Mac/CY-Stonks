@@ -1,9 +1,10 @@
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.ActorRef
+import akka.actor.typed.receptionist.Receptionist
 import actors.UserActor
 
 object Main extends App {
-  // Change the type parameter to match what GetPortfolio replies with
   val system = ActorSystem(Behaviors.setup[UserActor.Portfolio] { context =>
     val userActor = context.spawn(UserActor(), "user-1")
 
@@ -14,6 +15,14 @@ object Main extends App {
     // Fetch the user's portfolio
     userActor ! UserActor.GetPortfolio(context.self)
 
+    // Insert a new user into the database
+    try {
+      DataBaseControler.insertUser("Pauline Maceiras", "pauline.maceiras@example.com")
+      println("____________________________We just added a new user__________________________________")
+    } catch {
+      case e: Exception => println(s"Error adding user: ${e.getMessage}")
+    }
+
     // Receive and process the portfolio
     Behaviors.receiveMessage {
       case portfolio @ UserActor.Portfolio(assets) =>
@@ -21,4 +30,5 @@ object Main extends App {
         Behaviors.stopped
     }
   }, "PortfolioSystem")
+  Thread.sleep(2000) // Give it 2 seconds to finish processing
 }
