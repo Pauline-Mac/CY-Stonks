@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-actor-typed" % "2.8.0",
   "com.typesafe.akka" %% "akka-stream" % "2.8.0",
   "org.postgresql" % "postgresql" % "42.5.1",
-  "com.typesafe.akka" %% "akka-actor-typed" % "2.6.16"
+  "com.typesafe.akka" %% "akka-actor-typed" % "2.6.16",
+  "org.mindrot" % "jbcrypt" % "0.4"
 
 )
 

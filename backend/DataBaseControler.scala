@@ -1,4 +1,5 @@
 import java.sql.{Connection, DriverManager, Statement}
+import org.mindrot.jbcrypt.BCrypt
 
 object DataBaseControler {
   // Establish a connection to PostgreSQL
@@ -10,14 +11,16 @@ object DataBaseControler {
   }
 
   // Method to insert a new user
-  def insertUser(username: String, email: String): Unit = {
-    val sql = "INSERT INTO users (username, email) VALUES (?, ?)"
+  def insertUser(name: String, email: String, password: String): Unit = {
     try {
       val connection = getConnection()
-      val preparedStatement = connection.prepareStatement(sql)
-      preparedStatement.setString(1, username)
-      preparedStatement.setString(2, email)
-      preparedStatement.executeUpdate()
+      val statement: Statement = connection.createStatement()
+
+      // Hash the password using BCrypt
+      val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
+
+      val sql = s"INSERT INTO users (username, email, password_hash) VALUES ('$name', '$email', '$passwordHash')"
+      statement.executeUpdate(sql)
       connection.close()
     } catch {
       case e: Exception => println(s"Error adding user: ${e.getMessage}")

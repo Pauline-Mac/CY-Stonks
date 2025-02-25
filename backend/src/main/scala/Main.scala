@@ -15,9 +15,9 @@ object Main extends App {
     // Fetch the user's portfolio
     userActor ! UserActor.GetPortfolio(context.self)
 
-    // Insert a new user into the database
+    // Insert a new user into the database with a password
     try {
-      DataBaseControler.insertUser("Pauline Maceiras", "pauline.maceiras@example.com")
+      DataBaseControler.insertUser("Pauline Maceiras", "pauline.maceiras@example.com", "securePassword123")
       println("____________________________We just added a new user__________________________________")
     } catch {
       case e: Exception => println(s"Error adding user: ${e.getMessage}")
@@ -30,5 +30,7 @@ object Main extends App {
         Behaviors.stopped
     }
   }, "PortfolioSystem")
+
   Thread.sleep(2000) // Give it 2 seconds to finish processing
 }
+
