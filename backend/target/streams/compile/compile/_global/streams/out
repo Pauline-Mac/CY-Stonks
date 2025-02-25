@@ -1,5 +1,9 @@
-[error] -- [E008] Not Found Error: /app/DataBaseControler.scala:2:11 -------------------
-[error] 2 |import org.mindrot.jbcrypt.BCrypt
-[error]   |       ^^^^^^^^^^^
-[error]   |       value mindrot is not a member of org
-[error] one error found
+[error] -- [E040] Syntax Error: /app/src/main/scala/controllers/DataBaseController.scala:6:0 
+[error] 6 |object DataBaseController {
+[error]   |^^^^^^
+[error]   |'{' expected, but 'end of statement' found
+[error] -- [E040] Syntax Error: /app/src/main/scala/controllers/DataBaseController.scala:70:0 
+[error] 70 |
+[error]    |^
+[error]    |'}' expected, but eof found
+[error] two errors found

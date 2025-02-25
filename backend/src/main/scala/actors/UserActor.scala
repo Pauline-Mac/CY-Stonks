@@ -1,16 +1,18 @@
+
+
 package actors
 
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
+import controllers.DataBaseController  // Vérifie si DataBaseController est bien dans un package controllers
 
 object UserActor {
   sealed trait Command
+  final case class AddAsset(name: String, quantity: Int) extends Command
+  final case class GetPortfolio(replyTo: ActorRef[Portfolio]) extends Command
+  final case class CreateUser(name: String, email: String, passwordHash: String, replyTo: ActorRef[Boolean]) extends Command
 
-  case class AddAsset(name: String, quantity: Int) extends Command
-
-  case class GetPortfolio(replyTo: ActorRef[Portfolio]) extends Command
-
-  case class Portfolio(assets: Map[String, Int])
+  final case class Portfolio(assets: Map[String, Int])
 
   def apply(): Behavior[Command] = Behaviors.setup { context =>
     var portfolio = Portfolio(Map.empty)
@@ -24,31 +26,17 @@ object UserActor {
       case GetPortfolio(replyTo) =>
         replyTo ! portfolio
         Behaviors.same
+
+      case CreateUser(name, email, passwordHash, replyTo) =>
+        try {
+          DataBaseController.insertUser(name, email, passwordHash)
+          replyTo ! true // Send success to replyTo actor
+        } catch {
+          case e: Exception =>
+            println(s"Error adding user: ${e.getMessage}")
+            replyTo ! false
+        }
+        Behaviors.same
     }
   }
-}
-
-object Main extends App {
-  import actors.UserActor
-  import akka.actor.typed.ActorSystem
-  import akka.actor.typed.scaladsl.Behaviors
-
-  val system = ActorSystem(Behaviors.setup[UserActor.Portfolio] { context =>
-    // Create a user actor
-    val userActor = context.spawn(UserActor(), "user-1")
-
-    // Add assets to the user portfolio
-    userActor ! UserActor.AddAsset("AAPL", 10)
-    userActor ! UserActor.AddAsset("BTC", 2)
-
-    // Fetch and print the user's portfolio
-    userActor ! UserActor.GetPortfolio(context.self)
-
-    // Receive the portfolio and print it out
-    Behaviors.receiveMessage {
-      case UserActor.Portfolio(assets) =>
-        println(s"User portfolio: $assets")
-        Behaviors.stopped
-    }
-  }, "PortfolioSystem")
 }

@@ -1,51 +1,33 @@
 [debug] [zinc] IncrementalCompile -----------
 [debug] IncrementalCompile.incrementalCompile
-[debug] previous = Stamps for: 24 products, 4 sources, 3 libraries
-[debug] current source = Set(${BASE}/DataBaseControler.scala, ${BASE}/src/main/scala/Main.scala, ${BASE}/src/main/scala/actors/PortfolioActor.scala, ${BASE}/src/main/scala/actors/UserActor.scala)
-[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/DataBaseControler.scala, ${BASE}/src/main/scala/Main.scala), unmodified = ...),Set(),Set(),API Changes: Set())
+[debug] previous = Stamps for: 24 products, 4 sources, 4 libraries
+[debug] current source = Set(${BASE}/src/main/scala/Main.scala, ${BASE}/src/main/scala/controllers/DataBaseController.scala, ${BASE}/src/main/scala/actors/PortfolioActor.scala, ${BASE}/src/main/scala/actors/UserActor.scala)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(${BASE}/src/main/scala/controllers/DataBaseController.scala), removed = Set(${BASE}/DataBaseControler.scala), changed = Set(${BASE}/src/main/scala/actors/UserActor.scala, ${BASE}/src/main/scala/Main.scala), unmodified = ...),Set(),Set(),API Changes: Set())
 [debug] 
 [debug] Initial source changes:
-[debug] 	removed: Set()
-[debug] 	added: Set()
-[debug] 	modified: Set(${BASE}/DataBaseControler.scala, ${BASE}/src/main/scala/Main.scala)
+[debug] 	removed: Set(${BASE}/DataBaseControler.scala)
+[debug] 	added: Set(${BASE}/src/main/scala/controllers/DataBaseController.scala)
+[debug] 	modified: Set(${BASE}/src/main/scala/actors/UserActor.scala, ${BASE}/src/main/scala/Main.scala)
 [debug] Invalidated products: Set()
 [debug] External API changes: API Changes: Set()
 [debug] Modified binary dependencies: Set()
-[debug] Initial directly invalidated classes: Set(DataBaseControler, Main)
+[debug] Initial directly invalidated classes: Set(DataBaseControler, actors.UserActor$.Command, actors.UserActor$.GetPortfolio, actors.UserActor$.Portfolio, Main, actors.UserActor, actors.UserActor$.AddAsset, actors.Main)
 [debug] Sources indirectly invalidated by:
 [debug] 	product: Set()
 [debug] 	binary dep: Set()
 [debug] 	external source: Set()
-[debug] All initially invalidated classes: Set(DataBaseControler, Main)
-[debug] All initially invalidated sources:Set(${BASE}/DataBaseControler.scala, ${BASE}/src/main/scala/Main.scala)
-[debug] Initial set of included nodes: DataBaseControler, Main
+[debug] All initially invalidated classes: Set(DataBaseControler, actors.UserActor$.Command, actors.UserActor$.GetPortfolio, actors.UserActor$.Portfolio, Main, actors.UserActor, actors.UserActor$.AddAsset, actors.Main)
+[debug] All initially invalidated sources:Set(${BASE}/src/main/scala/controllers/DataBaseController.scala, ${BASE}/src/main/scala/actors/UserActor.scala, ${BASE}/src/main/scala/Main.scala)
+[debug] Initial set of included nodes: DataBaseControler, actors.UserActor$.Command, actors.UserActor$.GetPortfolio, actors.UserActor$.Portfolio, Main, actors.UserActor, actors.UserActor$.AddAsset, actors.Main
+[debug] Including actors.UserActor$.GetPortfolio by actors.UserActor$.Command
+[debug] Including actors.UserActor$.AddAsset by actors.UserActor$.Command
+[debug] Recompiling all sources: number of invalidated sources > 50.0 percent of all sources
 [debug] compilation cycle 1
-[info] compiling 2 Scala sources to /app/target/scala-3.3.5/classes ...
+[info] compiling 4 Scala sources to /app/target/scala-3.3.5/classes ...
 [debug] Returning already retrieved and compiled bridge: /root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.3.5/scala3-sbt-bridge-3.3.5.jar.
-[debug] [zinc] Running cached compiler 363db11e for Scala Compiler version 3.3.5
+[debug] [zinc] Running cached compiler d6eb187 for Scala Compiler version 3.3.5
 [debug] [zinc] The Scala compiler is invoked with:
 [debug] 	-classpath
 [debug] 	/app/target/scala-3.3.5/classes:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala3-library_3/3.3.5/scala3-library_3-3.3.5.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor-typed_3/2.8.0/akka-actor-typed_3-2.8.0.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-stream_3/2.8.0/akka-stream_3-2.8.0.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/postgresql/postgresql/42.5.1/postgresql-42.5.1.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.7/slf4j-api-2.0.7.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.13.15/scala-library-2.13.15.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_3/2.8.0/akka-actor_3-2.8.0.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-slf4j_3/2.8.0/akka-slf4j_3-2.8.0.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-protobuf-v3_3/2.8.0/akka-protobuf-v3_3-2.8.0.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_3/0.6.1/ssl-config-core_3-0.6.1.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/ch/qos/logback/logback-core/1.4.11/logback-core-1.4.11.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.4.2/config-1.4.2.jar:/root/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_3/1.0.0/scala-java8-compat_3-1.0.0.jar
-[debug] Scala compilation took 4.795279601 s
+[debug] Scala compilation took 9.948569474 s
 [info] done compiling
-[debug] Invalidating (transitively) by inheritance from DataBaseControler...
-[debug] Initial set of included nodes: DataBaseControler
-[debug] Invalidated by transitive inheritance dependency: Set(DataBaseControler)
-[debug] The following modified names cause invalidation of Main: [UsedName(insertUser,[Default])]
-[debug] Change NamesChange(DataBaseControler,ModifiedNames(changes = UsedName(insertUser,[Default]))) invalidates 2 classes due to The DataBaseControler has the following regular definitions changed:
-[debug] 	UsedName(insertUser,[Default]).
-[debug]   > by transitive inheritance: Set(DataBaseControler)
-[debug]   > 
-[debug]   > by member reference: Set(Main)
-[debug]   > 
-[debug]         
-[debug] New invalidations:
-[debug] 	Main
-[debug] Initial set of included nodes: Main
-[debug] Previously invalidated, but (transitively) depend on new invalidations:
-[debug] Final step, transitive dependencies:
-[debug] 	Set(Main)
-[debug] Initial set of included nodes: DataBaseControler, Main
-[debug] Including Main by DataBaseControler
-[debug] Invalidated macros due to upstream dependencies change: Set()
-[debug] No classes were invalidated.

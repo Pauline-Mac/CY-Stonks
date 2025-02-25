@@ -2,16 +2,18 @@
 [debug] Input file mappings:
 [debug] 	Main.class
 [debug] 	  /app/target/scala-3.3.5/classes/Main.class
+[debug] 	controllers
+[debug] 	  /app/target/scala-3.3.5/classes/controllers
+[debug] 	controllers/DataBaseController.tasty
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/DataBaseController.tasty
+[debug] 	controllers/DataBaseController$.class
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/DataBaseController$.class
+[debug] 	controllers/DataBaseController.class
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/DataBaseController.class
 [debug] 	Main$.class
 [debug] 	  /app/target/scala-3.3.5/classes/Main$.class
-[debug] 	DataBaseControler$.class
-[debug] 	  /app/target/scala-3.3.5/classes/DataBaseControler$.class
-[debug] 	DataBaseControler.tasty
-[debug] 	  /app/target/scala-3.3.5/classes/DataBaseControler.tasty
 [debug] 	actors
 [debug] 	  /app/target/scala-3.3.5/classes/actors
-[debug] 	actors/Main.class
-[debug] 	  /app/target/scala-3.3.5/classes/actors/Main.class
 [debug] 	actors/UserActor$GetPortfolio.class
 [debug] 	  /app/target/scala-3.3.5/classes/actors/UserActor$GetPortfolio.class
 [debug] 	actors/UserActor$Portfolio$.class
@@ -24,8 +26,8 @@
 [debug] 	  /app/target/scala-3.3.5/classes/actors/UserActor$Command.class
 [debug] 	actors/PortfolioActor$GetPortfolio$.class
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor$GetPortfolio$.class
-[debug] 	actors/Main$.class
-[debug] 	  /app/target/scala-3.3.5/classes/actors/Main$.class
+[debug] 	actors/UserActor$CreateUser.class
+[debug] 	  /app/target/scala-3.3.5/classes/actors/UserActor$CreateUser.class
 [debug] 	actors/PortfolioActor$Portfolio.class
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor$Portfolio.class
 [debug] 	actors/PortfolioActor$Command.class
@@ -34,14 +36,14 @@
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor$AddAsset$.class
 [debug] 	actors/PortfolioActor$AddAsset.class
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor$AddAsset.class
+[debug] 	actors/UserActor$CreateUser$.class
+[debug] 	  /app/target/scala-3.3.5/classes/actors/UserActor$CreateUser$.class
 [debug] 	actors/PortfolioActor.tasty
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor.tasty
 [debug] 	actors/PortfolioActor$GetPortfolio.class
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor$GetPortfolio.class
 [debug] 	actors/UserActor$AddAsset.class
 [debug] 	  /app/target/scala-3.3.5/classes/actors/UserActor$AddAsset.class
-[debug] 	actors/Main.tasty
-[debug] 	  /app/target/scala-3.3.5/classes/actors/Main.tasty
 [debug] 	actors/UserActor.tasty
 [debug] 	  /app/target/scala-3.3.5/classes/actors/UserActor.tasty
 [debug] 	actors/PortfolioActor.class
@@ -58,6 +60,4 @@
 [debug] 	  /app/target/scala-3.3.5/classes/actors/PortfolioActor$.class
 [debug] 	Main.tasty
 [debug] 	  /app/target/scala-3.3.5/classes/Main.tasty
-[debug] 	DataBaseControler.class
-[debug] 	  /app/target/scala-3.3.5/classes/DataBaseControler.class
 [debug] Done packaging.
