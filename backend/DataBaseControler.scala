@@ -10,16 +10,17 @@ object DataBaseControler {
   }
 
   // Method to insert a new user
-  def insertUser(name: String, email: String): Unit = {
-    try{
+  def insertUser(username: String, email: String): Unit = {
+    val sql = "INSERT INTO users (username, email) VALUES (?, ?)"
+    try {
       val connection = getConnection()
-      val statement: Statement = connection.createStatement()
-      val sql = s"INSERT INTO users (name, email) VALUES ('$name', '$email')"
-      statement.executeUpdate(sql)
+      val preparedStatement = connection.prepareStatement(sql)
+      preparedStatement.setString(1, username)
+      preparedStatement.setString(2, email)
+      preparedStatement.executeUpdate()
       connection.close()
-    }catch {
-      case e:Exception=>println(s"Error adding user: ${e.getMessage}")
+    } catch {
+      case e: Exception => println(s"Error adding user: ${e.getMessage}")
     }
-
   }
 }
