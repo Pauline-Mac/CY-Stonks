@@ -1,5 +1,20 @@
 [debug] Created transactional ClassFileManager with tempDir = /app/target/scala-3.3.5/classes.bak
 [debug] About to delete class files:
+[debug] 	AlphaVantageClient.class
+[debug] 	AlphaVantageClient$.class
+[debug] 	AlphaVantageClient.tasty
+[debug] 	AlphaVantageClient$.tasty
+[debug] We backup class files:
+[debug] 	AlphaVantageClient.class
+[debug] 	AlphaVantageClient$.class
+[debug] 	AlphaVantageClient.tasty
+[debug] 	AlphaVantageClient$.tasty
+[debug] Registering generated classes:
+[debug] 	AlphaVantageClient.class
+[debug] 	AlphaVantageClient$.class
+[debug] 	AlphaVantageClient.tasty
+[debug] 	AlphaVantageClient$.tasty
+[debug] About to delete class files:
 [debug] 	Main$.class
 [debug] 	Main.class
 [debug] 	Main$.tasty

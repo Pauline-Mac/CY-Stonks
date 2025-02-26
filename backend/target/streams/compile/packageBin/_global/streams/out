@@ -8,6 +8,14 @@
 [debug] 	  /app/target/scala-3.3.5/classes/controllers/DataBaseController.tasty
 [debug] 	controllers/DataBaseController$.class
 [debug] 	  /app/target/scala-3.3.5/classes/controllers/DataBaseController$.class
+[debug] 	controllers/API
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/API
+[debug] 	controllers/API/AlphaVantageClient.class
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/API/AlphaVantageClient.class
+[debug] 	controllers/API/AlphaVantageClient.tasty
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/API/AlphaVantageClient.tasty
+[debug] 	controllers/API/AlphaVantageClient$.class
+[debug] 	  /app/target/scala-3.3.5/classes/controllers/API/AlphaVantageClient$.class
 [debug] 	controllers/DataBaseController.class
 [debug] 	  /app/target/scala-3.3.5/classes/controllers/DataBaseController.class
 [debug] 	Main$.class

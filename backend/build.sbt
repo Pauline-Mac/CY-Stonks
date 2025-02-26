@@ -4,16 +4,16 @@ ThisBuild / scalaVersion := "3.3.5"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "Cy_Stonks"
+    name := "CY_Stonks"
   )
 
 libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-actor-typed" % "2.8.0",
-  "com.typesafe.akka" %% "akka-stream" % "2.8.0",
+  "com.typesafe.akka" %% "akka-actor-typed" % "2.8.3",
+  "com.typesafe.akka" %% "akka-http" % "10.5.2",
+  "org.json4s" %% "json4s-native" % "4.0.3",
+  "com.typesafe.akka" %% "akka-stream" % "2.8.3",
   "org.postgresql" % "postgresql" % "42.5.1",
-  "com.typesafe.akka" %% "akka-actor-typed" % "2.6.16",
   "org.mindrot" % "jbcrypt" % "0.4"
-
 )
 
 libraryDependencies += "org.slf4j" % "slf4j-api" % "2.0.7"

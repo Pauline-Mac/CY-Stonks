@@ -1,9 +1,3 @@
-[error] -- [E040] Syntax Error: /app/src/main/scala/controllers/DataBaseController.scala:6:0 
-[error] 6 |object DataBaseController {
-[error]   |^^^^^^
-[error]   |'{' expected, but 'end of statement' found
-[error] -- [E040] Syntax Error: /app/src/main/scala/controllers/DataBaseController.scala:70:0 
-[error] 70 |
-[error]    |^
-[error]    |'}' expected, but eof found
-[error] two errors found
+[warn] there was 1 deprecation warning; re-run with -deprecation for details
+[warn] one warning found
+[warn] one warning found

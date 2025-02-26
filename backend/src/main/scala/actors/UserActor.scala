@@ -4,7 +4,7 @@ package actors
 
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
-import controllers.DataBaseController  // Vérifie si DataBaseController est bien dans un package controllers
+import controllers.DataBaseController
 
 object UserActor {
   sealed trait Command

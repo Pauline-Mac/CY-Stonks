@@ -3,10 +3,15 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.ActorRef
 import org.mindrot.jbcrypt.BCrypt
 import actors.UserActor
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+import controllers.API.AlphaVantageClient
+
 
 object Main extends App {
 
   def printCyStonksMessage(): Unit = {
+    println("Welcome to ")
     println("""
   ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
               |⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -42,6 +47,7 @@ object Main extends App {
 
 
   val system = ActorSystem(Behaviors.setup[UserActor.Portfolio] { context =>
+    printCyStonksMessage()
     // Create a user actor
     val userActor = context.spawn(UserActor(), "user-1")
 
@@ -58,11 +64,9 @@ object Main extends App {
 
     val userCreatedActor = context.spawn(Behaviors.receiveMessage[Boolean] {
       case true =>
-        printCyStonksMessage()
         println("User successfully created in the database!")
         Behaviors.same
       case false =>
-        printCyStonksMessage()
         println("Failed to create user in the database.")
         Behaviors.same
     }, "userCreatedActor")
@@ -73,12 +77,13 @@ object Main extends App {
     // Receive the portfolio and print it out
     Behaviors.receiveMessage {
       case portfolio @ UserActor.Portfolio(assets) =>
-        printCyStonksMessage()
         println(s"User portfolio: $assets")
         Behaviors.stopped
     }
   }, "PortfolioSystem")
 
-  // Give it time to process
-  Thread.sleep(2000)
+  val stockDataActor = system.systemActorOf(AlphaVantageClient.stockDataActor, "stockDataActor")
+  stockDataActor ! "fetchStockData"
+  Thread.sleep(5000)
+
 }
