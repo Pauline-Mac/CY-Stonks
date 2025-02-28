@@ -22,11 +22,12 @@ services:
     container_name: cy_stonks_backend
     depends_on:
       - postgres
+    env_file:
+      - secure.env
     environment:
       DATABASE_URL: "jdbc:postgresql://postgres:5432/cy_stonks"
       DATABASE_USER: "cy_stonks_user"
       DATABASE_PASSWORD: "cytech0001"
-      ALPHA_VANTAGE_API_KEY: "${ALPHA_VANTAGE_API_KEY}"
     ports:
       - "9000:9000"
     volumes:

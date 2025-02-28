@@ -2,31 +2,60 @@
 [debug] About to delete class files:
 [debug] 	AlphaVantageClient.class
 [debug] 	AlphaVantageClient$.class
-[debug] 	AlphaVantageClient.tasty
-[debug] 	AlphaVantageClient$.tasty
-[debug] We backup class files:
-[debug] 	AlphaVantageClient.class
-[debug] 	AlphaVantageClient$.class
-[debug] 	AlphaVantageClient.tasty
-[debug] 	AlphaVantageClient$.tasty
-[debug] Registering generated classes:
-[debug] 	AlphaVantageClient.class
-[debug] 	AlphaVantageClient$.class
-[debug] 	AlphaVantageClient.tasty
-[debug] 	AlphaVantageClient$.tasty
-[debug] About to delete class files:
 [debug] 	Main$.class
 [debug] 	Main.class
+[debug] 	AlphaVantageClient.tasty
+[debug] 	AlphaVantageClient$.tasty
 [debug] 	Main$.tasty
 [debug] 	Main.tasty
 [debug] We backup class files:
+[debug] 	AlphaVantageClient.class
+[debug] 	AlphaVantageClient$.class
 [debug] 	Main$.class
 [debug] 	Main.class
+[debug] 	AlphaVantageClient.tasty
+[debug] 	AlphaVantageClient$.tasty
 [debug] 	Main$.tasty
 [debug] 	Main.tasty
 [debug] Registering generated classes:
-[debug] 	Main.class
 [debug] 	Main$.class
-[debug] 	Main.tasty
+[debug] 	AlphaVantageClient$GetStockPrice.class
+[debug] 	AlphaVantageClient$GetRSI.class
+[debug] 	AlphaVantageClient$GetTopGainers.class
+[debug] 	AlphaVantageClient$GetTopGainers$.class
+[debug] 	AlphaVantageClient$RSIResponse.class
+[debug] 	AlphaVantageClient$ErrorResponse$.class
+[debug] 	Main.class
+[debug] 	AlphaVantageClient$Response.class
+[debug] 	AlphaVantageClient$TopGainersResponse.class
+[debug] 	AlphaVantageClient$StockPriceResponse.class
+[debug] 	AlphaVantageClient$TopGainersResponse$.class
+[debug] 	AlphaVantageClient$ErrorResponse.class
+[debug] 	AlphaVantageClient$GetStockPrice$.class
+[debug] 	AlphaVantageClient$StockPriceResponse$.class
+[debug] 	AlphaVantageClient$GetRSI$.class
+[debug] 	AlphaVantageClient$Command.class
+[debug] 	AlphaVantageClient.class
+[debug] 	AlphaVantageClient$RSIResponse$.class
+[debug] 	AlphaVantageClient$.class
 [debug] 	Main$.tasty
+[debug] 	AlphaVantageClient$GetStockPrice.tasty
+[debug] 	AlphaVantageClient$GetRSI.tasty
+[debug] 	AlphaVantageClient$GetTopGainers.tasty
+[debug] 	AlphaVantageClient$GetTopGainers$.tasty
+[debug] 	AlphaVantageClient$RSIResponse.tasty
+[debug] 	AlphaVantageClient$ErrorResponse$.tasty
+[debug] 	Main.tasty
+[debug] 	AlphaVantageClient$Response.tasty
+[debug] 	AlphaVantageClient$TopGainersResponse.tasty
+[debug] 	AlphaVantageClient$StockPriceResponse.tasty
+[debug] 	AlphaVantageClient$TopGainersResponse$.tasty
+[debug] 	AlphaVantageClient$ErrorResponse.tasty
+[debug] 	AlphaVantageClient$GetStockPrice$.tasty
+[debug] 	AlphaVantageClient$StockPriceResponse$.tasty
+[debug] 	AlphaVantageClient$GetRSI$.tasty
+[debug] 	AlphaVantageClient$Command.tasty
+[debug] 	AlphaVantageClient.tasty
+[debug] 	AlphaVantageClient$RSIResponse$.tasty
+[debug] 	AlphaVantageClient$.tasty
 [debug] Removing the temporary directory used for backing up class files: /app/target/scala-3.3.5/classes.bak
