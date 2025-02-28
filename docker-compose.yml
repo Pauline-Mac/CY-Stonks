@@ -17,8 +17,8 @@ services:
 
   backend:
     build:
-      context: ./backend  # Indique que le Dockerfile est dans backend/
-      dockerfile: Dockerfile  # Nom du fichier Dockerfile
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: cy_stonks_backend
     depends_on:
       - postgres
@@ -31,9 +31,25 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./backend:/app  # Monte uniquement le backend dans /app
+      - ./backend:/app
     working_dir: /app
-    command: [ "sbt", "runMain Main" ]
+    command: ["sbt", "runMain Main"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cy_stonks_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:9000
+    stdin_open: true
 
   pgadmin:
     image: dpage/pgadmin4

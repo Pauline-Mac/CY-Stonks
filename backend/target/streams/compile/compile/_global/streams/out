@@ -1,2 +1,5 @@
-[warn] there were 3 deprecation warnings; re-run with -deprecation for details
-[warn] one warning found
+[error] -- [E040] Syntax Error: /app/src/main/scala/Main.scala:102:0 -------------------
+[error] 102 |}
+[error]     |^
+[error]     |eof expected, but '}' found
+[error] one error found

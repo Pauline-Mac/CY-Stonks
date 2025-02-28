@@ -1,4 +1,3 @@
-// In file controllers/API/AlphaVantageClient.scala
 package controllers.API
 
 import akka.actor.typed.ActorSystem
@@ -72,7 +71,7 @@ object AlphaVantageClient {
               val json = parse(data)
               val gainers = (json \ "top_gainers").children.flatMap { item =>
                 (item \ "ticker").extractOpt[String]
-              }
+              }.toList // Ensure it's a List
               TopGainersResponse(gainers)
             }
 

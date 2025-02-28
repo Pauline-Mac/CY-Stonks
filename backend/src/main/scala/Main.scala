@@ -1,9 +1,12 @@
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.ActorSystem => ClassicActorSystem
 import org.mindrot.jbcrypt.BCrypt
 import actors.UserActor
-import controllers.API.AlphaVantageClient
+import controllers.API.{AlphaVantageClient, ApiServer}
+import scala.util.{Success, Failure}
+import scala.concurrent.ExecutionContext
+import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.duration._
 
 object Main extends App {
   // Function to print the CyStonks message
@@ -12,13 +15,19 @@ object Main extends App {
     println(""" ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ """)
   }
 
-  // Create the typed actor system for portfolio management
-  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "PortfolioSystem")
+  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "CyStonksSystem")
+  implicit val executionContext: ExecutionContext = system.executionContext
+
+  // Print welcome message
+  printCyStonksMessage()
 
   // Create the AlphaVantage client actor
   val alphaVantageClient = system.systemActorOf(AlphaVantageClient(), "alphaVantageClient")
 
-  // Create a response handler actor
+  // Create a user actor
+  val userActor = system.systemActorOf(UserActor(), "userActor")
+
+  // Create a response handler actor for testing
   val responseHandler = system.systemActorOf(
     Behaviors.receiveMessage[AlphaVantageClient.Response] {
       case AlphaVantageClient.StockPriceResponse(symbol, Some(price)) =>
@@ -44,52 +53,55 @@ object Main extends App {
     "responseHandler"
   )
 
-  // Make multiple API calls
-  alphaVantageClient ! AlphaVantageClient.GetStockPrice("AAPL", responseHandler)
-  alphaVantageClient ! AlphaVantageClient.GetTopGainers(responseHandler)
-  alphaVantageClient ! AlphaVantageClient.GetRSI("MSFT", responseHandler)
+  // Initialize user data
+  // Hash a password using BCrypt
+  val password = "securePassword123"
+  val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
 
-  // Functionality for portfolio management and user management
-  system.systemActorOf(
-    Behaviors.setup[UserActor.Portfolio] { context =>
-      printCyStonksMessage()
-
-      // Create a user actor
-      val userActor = context.spawn(UserActor(), "user-1")
-
-      // Add assets to the user portfolio
-      userActor ! UserActor.AddAsset("AAPL", 10)
-      userActor ! UserActor.AddAsset("BTC", 2)
-
-      // Fetch and print the user's portfolio
-      userActor ! UserActor.GetPortfolio(context.self)
-
-      // Insert the user into the database with a hashed password using BCrypt
-      val password = "securePassword123"
-      val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt()) // Hash the password
-
-      val userCreatedActor = context.spawn(Behaviors.receiveMessage[Boolean] {
-        case true =>
-          println("User successfully created in the database!")
-          Behaviors.same
-        case false =>
-          println("Failed to create user in the database.")
-          Behaviors.same
-      }, "userCreatedActor")
-
-      // Create a new user and insert into the database with the hashed password
-      userActor ! UserActor.CreateUser("Pauline Maceiras", "pauline.maceiras@example.com", hashedPassword, userCreatedActor)
-
-      // Receive the portfolio and print it out
-      Behaviors.receiveMessage {
-        case portfolio @ UserActor.Portfolio(assets) =>
-          println(s"User portfolio: $assets")
-          Behaviors.same
-      }
+  // Create a user with hashed password
+  val userCreatedActor = system.systemActorOf(
+    Behaviors.receiveMessage[Boolean] {
+      case true =>
+        println("User successfully created in the database!")
+        // Add sample assets to the portfolio after user creation
+        userActor ! UserActor.AddAsset("AAPL", 10)
+        userActor ! UserActor.AddAsset("BTC", 2)
+        Behaviors.same
+      case false =>
+        println("Failed to create user in the database.")
+        Behaviors.same
     },
-    "portfolioReceiver"
+    "userCreatedActor"
   )
 
-  // Wait to receive the stock data (add sleep to give the request time to complete)
-  Thread.sleep(5000)
+  userActor ! UserActor.CreateUser("Pauline Maceiras", "pauline.maceiras@example.com", hashedPassword, userCreatedActor)
+
+  // Create and start the API server
+  val apiServer = new ApiServer(alphaVantageClient, userActor)
+  val serverBinding = apiServer.start()
+
+  serverBinding.onComplete {
+    case Success(binding) =>
+      val address = binding.localAddress
+      println(s"Server online at http://${address.getHostString}:${address.getPort}/")
+
+      // Make some test API calls
+      alphaVantageClient ! AlphaVantageClient.GetStockPrice("AAPL", responseHandler)
+      alphaVantageClient ! AlphaVantageClient.GetTopGainers(responseHandler)
+      alphaVantageClient ! AlphaVantageClient.GetRSI("MSFT", responseHandler)
+
+    case Failure(ex) =>
+      println(s"Failed to bind HTTP endpoint, terminating system: ${ex.getMessage}")
+      system.terminate()
+  }
+
+  // Keep the system alive
+  Await.result(system.whenTerminated, Duration.Inf)
+
+  /*// Add shutdown hook to clean up resources
+  sys.addShutdownHook {
+    serverBinding
+      .flatMap(_.unbind())
+      .onComplete(_ => system.terminate())
+  }*/
 }
