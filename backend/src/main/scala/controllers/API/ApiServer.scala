@@ -9,7 +9,7 @@ import akka.http.scaladsl.server.Route
 import akka.util.Timeout
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
-import actors.UserActor
+import actors.{UserActor, AssetActor}
 import spray.json._
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import controllers._  // Import all the response classes
@@ -34,7 +34,6 @@ class ApiServer(alphaVantageClient: ActorRef[AlphaVantageClient.Command],
     }
   }
 
-
   // Health check route
   val healthRoute: Route = path("health") {
     get {
@@ -55,17 +54,20 @@ class ApiServer(alphaVantageClient: ActorRef[AlphaVantageClient.Command],
     }
   }
 
-  // Portfolio route
+  // Portfolio route - adapted to match UserActor.GetPortfolio
   val portfolioRoute: Route = path("api" / "portfolio") {
     get {
-      val portfolioFuture: Future[UserActor.Portfolio] =
+      // Use the actual response type from UserActor.GetPortfolio
+      val portfolioFuture: Future[List[AssetActor.Asset]] =
         userActor.ask(ref => UserActor.GetPortfolio(ref))
 
       onComplete(portfolioFuture) {
-        case scala.util.Success(UserActor.Portfolio(assets)) =>
-          val assetList = assets.map { case (symbol, quantity) =>
-            Asset(symbol, quantity)
-          }.toList
+        case scala.util.Success(assets) =>
+          // Convert the list of AssetActor.Asset to the format expected by the API
+          val assetList = assets.map { asset =>
+            // Convert BigDecimal to Double for the Asset class
+            Asset(asset.assetSymbol, asset.quantity.doubleValue)
+          }
           complete(PortfolioResponse(assetList))
 
         case scala.util.Failure(ex) =>

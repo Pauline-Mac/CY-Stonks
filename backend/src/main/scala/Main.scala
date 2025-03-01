@@ -3,6 +3,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import org.mindrot.jbcrypt.BCrypt
 import actors.UserActor
 import controllers.API.{AlphaVantageClient, ApiServer}
+import controllers.DataBaseController
 import scala.util.{Success, Failure}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.{Await, ExecutionContext}
@@ -63,10 +64,9 @@ object Main extends App {
     Behaviors.receiveMessage[Boolean] {
       case true =>
         println("User is in the database!")
+
         // Add sample assets to the portfolio after user creation
 
-        /*userActor ! UserActor.AddAsset("AAPL", 10)
-        userActor ! UserActor.AddAsset("BTC", 2)*/
         Behaviors.same
       case false =>
         println("Failed to create user in the database.")
@@ -75,7 +75,6 @@ object Main extends App {
     "userCreatedActor"
   )
   userActor ! UserActor.CreateUser("Pauline Maceiras", "pauline.maceiras@example.com", hashedPassword, userCreatedActor)
-  userActor ! UserActor.CreateUser("JP Maceiras", "jp.maceiras@example.com", hashedPassword, userCreatedActor)
 
   // Create and start the API server
   val apiServer = new ApiServer(alphaVantageClient, userActor)

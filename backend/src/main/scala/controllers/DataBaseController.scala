@@ -15,64 +15,87 @@ object DataBaseController {
   }
 
   // Method to insert a new user
-  def insertUser(name: String, email: String, password: String): Boolean = {
+  def insertUser(name: String, email: String, password: String): Option[Int] = {
     val connection = getConnection()
-    var preparedStatement: PreparedStatement = null
+    var checkStatement: PreparedStatement = null
+    var insertStatement: PreparedStatement = null
     var resultSet: ResultSet = null
-    var userExists = false
+    var userId: Option[Int] = None
 
     try {
-      // Check if the user already exists
+      // Vérifier si l'utilisateur existe déjà
       val checkSql = "SELECT COUNT(1) FROM users WHERE email = ? OR username = ?"
-      preparedStatement = connection.prepareStatement(checkSql)
-      preparedStatement.setString(1, email)
-      preparedStatement.setString(2, name)
-      resultSet = preparedStatement.executeQuery()
+      checkStatement = connection.prepareStatement(checkSql)
+      checkStatement.setString(1, email)
+      checkStatement.setString(2, name)
+      resultSet = checkStatement.executeQuery()
 
       if (resultSet.next() && resultSet.getInt(1) > 0) {
-        userExists = true
         println("User with the same email or username already exists.")
       } else {
-        // Hash the password using BCrypt
+        // Hasher le mot de passe avec BCrypt
         val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
 
-        // Insert the new user
-        val insertSql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)"
-        preparedStatement = connection.prepareStatement(insertSql)
-        preparedStatement.setString(1, name)
-        preparedStatement.setString(2, email)
-        preparedStatement.setString(3, passwordHash)
+        // Insérer le nouvel utilisateur et récupérer son ID
+        val insertSql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?) RETURNING user_id"
+        insertStatement = connection.prepareStatement(insertSql)
+        insertStatement.setString(1, name)
+        insertStatement.setString(2, email)
+        insertStatement.setString(3, passwordHash)
 
-        preparedStatement.executeUpdate()
-        println("User successfully added.")
+        val insertResult = insertStatement.executeQuery()
+        if (insertResult.next()) {
+          userId = Some(insertResult.getInt("user_id"))
+          println(s"User successfully added with user_id = ${userId.get}")
+        }
       }
     } catch {
       case e: Exception =>
         println(s"Error adding user: ${e.getMessage}")
-        userExists = true // Consider the operation failed if an exception occurs
     } finally {
       if (resultSet != null) resultSet.close()
-      if (preparedStatement != null) preparedStatement.close()
+      if (checkStatement != null) checkStatement.close()
+      if (insertStatement != null) insertStatement.close()
       connection.close()
     }
 
-    !userExists // Return true if the user was added successfully, false otherwise
+    userId // Retourne Some(user_id) si l'insertion a réussi, sinon None
   }
 
   // Method to create a portfolio for a user
   def createPortfolio(userId: Int, portfolioName: String): Option[Int] = {
     var portfolioId: Option[Int] = None
-    val sql = "INSERT INTO portfolios (user_id, portfolio_name) VALUES (?, ?)"
+    val checkSql = "SELECT portfolio_id FROM portfolios WHERE user_id = ? AND portfolio_name = ?"
+    val insertSql = "INSERT INTO portfolios (user_id, portfolio_name) VALUES (?, ?)"
 
     val connection: Connection = getConnection()
     try {
-      val preparedStatement: PreparedStatement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS)
+      // Vérifier si le portfolio existe déjà
+      val checkStatement: PreparedStatement = connection.prepareStatement(checkSql)
       try {
-        preparedStatement.setInt(1, userId)
-        preparedStatement.setString(2, portfolioName)
-        preparedStatement.executeUpdate()
+        checkStatement.setInt(1, userId)
+        checkStatement.setString(2, portfolioName)
+        val resultSet: ResultSet = checkStatement.executeQuery()
+        try {
+          if (resultSet.next()) {
+            println("Portfolio already exists")
+            return None // Si un portfolio existe déjà, on retourne None directement
+          }
+        } finally {
+          resultSet.close()
+        }
+      } finally {
+        checkStatement.close()
+      }
 
-        val generatedKeys: ResultSet = preparedStatement.getGeneratedKeys
+      // Insérer le portfolio s'il n'existe pas encore
+      val insertStatement: PreparedStatement = connection.prepareStatement(insertSql, java.sql.Statement.RETURN_GENERATED_KEYS)
+      try {
+        insertStatement.setInt(1, userId)
+        insertStatement.setString(2, portfolioName)
+        insertStatement.executeUpdate()
+
+        val generatedKeys: ResultSet = insertStatement.getGeneratedKeys
         try {
           if (generatedKeys.next()) {
             portfolioId = Some(generatedKeys.getInt(1))
@@ -81,7 +104,7 @@ object DataBaseController {
           generatedKeys.close()
         }
       } finally {
-        preparedStatement.close()
+        insertStatement.close()
       }
     } catch {
       case e: Exception =>
@@ -92,6 +115,7 @@ object DataBaseController {
 
     portfolioId
   }
+
 
   // Method to add an asset to a portfolio
   def addAssetToPortfolio(portfolioId: Int, assetType: String, assetSymbol: String, quantity: Double, purchasePrice: Double): Boolean = {
