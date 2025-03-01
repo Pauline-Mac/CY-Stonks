@@ -62,10 +62,11 @@ object Main extends App {
   val userCreatedActor = system.systemActorOf(
     Behaviors.receiveMessage[Boolean] {
       case true =>
-        println("User successfully created in the database!")
+        println("User is in the database!")
         // Add sample assets to the portfolio after user creation
-        userActor ! UserActor.AddAsset("AAPL", 10)
-        userActor ! UserActor.AddAsset("BTC", 2)
+
+        /*userActor ! UserActor.AddAsset("AAPL", 10)
+        userActor ! UserActor.AddAsset("BTC", 2)*/
         Behaviors.same
       case false =>
         println("Failed to create user in the database.")
@@ -73,8 +74,8 @@ object Main extends App {
     },
     "userCreatedActor"
   )
-
   userActor ! UserActor.CreateUser("Pauline Maceiras", "pauline.maceiras@example.com", hashedPassword, userCreatedActor)
+  userActor ! UserActor.CreateUser("JP Maceiras", "jp.maceiras@example.com", hashedPassword, userCreatedActor)
 
   // Create and start the API server
   val apiServer = new ApiServer(alphaVantageClient, userActor)
@@ -98,10 +99,4 @@ object Main extends App {
   // Keep the system alive
   Await.result(system.whenTerminated, Duration.Inf)
 
-  /*// Add shutdown hook to clean up resources
-  sys.addShutdownHook {
-    serverBinding
-      .flatMap(_.unbind())
-      .onComplete(_ => system.terminate())
-  }*/
 }
