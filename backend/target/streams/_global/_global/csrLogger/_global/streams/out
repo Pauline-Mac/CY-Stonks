@@ -1,6 +1,6 @@
 [debug] downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.3.5/scala3-sbt-bridge-3.3.5.pom
-[debug] downloaded https://repo1.maven.org/maven2/com/typesafe/akka/akka-http-spray-json_3/10.5.2/akka-http-spray-json_3-10.5.2.pom
-[debug] downloaded https://repo1.maven.org/maven2/io/spray/spray-json_3/1.3.6/spray-json_3-1.3.6.pom
+[debug] downloaded https://repo1.maven.org/maven2/com/lihaoyi/requests_3/0.8.0/requests_3-0.8.0.pom
+[debug] downloaded https://repo1.maven.org/maven2/com/lihaoyi/geny_3/1.0.0/geny_3-1.0.0.pom
+[debug] downloaded https://repo1.maven.org/maven2/com/lihaoyi/geny_3/1.0.0/geny_3-1.0.0.jar
+[debug] downloaded https://repo1.maven.org/maven2/com/lihaoyi/requests_3/0.8.0/requests_3-0.8.0.jar
 [debug] downloaded https://repo1.maven.org/maven2/org/scala-lang/scala3-sbt-bridge/3.3.5/scala3-sbt-bridge-3.3.5.jar
-[debug] downloaded https://repo1.maven.org/maven2/io/spray/spray-json_3/1.3.6/spray-json_3-1.3.6.jar
-[debug] downloaded https://repo1.maven.org/maven2/com/typesafe/akka/akka-http-spray-json_3/10.5.2/akka-http-spray-json_3-10.5.2.jar
