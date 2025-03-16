@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cy-stonks.iml" filepath="$PROJECT_DIR$/.idea/modules/cy-stonks.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cy-stonks-build.iml" filepath="$PROJECT_DIR$/.idea/modules/cy-stonks-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cy-stonks-back.iml" filepath="$PROJECT_DIR$/.idea/modules/cy-stonks-back.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/cy-stonks-back-build.iml" filepath="$PROJECT_DIR$/.idea/modules/cy-stonks-back-build.iml" />
     </modules>
   </component>
 </project>

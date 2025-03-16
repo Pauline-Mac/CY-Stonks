@@ -33,7 +33,7 @@ object HttpServer {
           // newServerAt(anyIpAdress, port)
           // 0.0.0.0 to be accessible from any IP address
           // localhost or 127.0.0.1 to be accessible only from the same machine
-          val futureBinding = Http().newServerAt("0.0.0.0", 8080).bind(routes.userRoutes)
+          val futureBinding = Http().newServerAt("0.0.0.0", 8081).bind(routes.userRoutes)
 
           futureBinding.onComplete {
             case Success(binding) =>

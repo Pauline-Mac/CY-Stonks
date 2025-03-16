@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="Cy_Stonks,cy-stonks,cy-stonks_3179" />
+    <profile name="sbt 1" modules="Cy_Stonks,cy-stonks,cy-stonks-back,cy-stonks_3179" />
   </component>
 </project>
