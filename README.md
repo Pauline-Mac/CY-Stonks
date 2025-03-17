@@ -24,3 +24,10 @@ Get the details of one user:
 Delete a user:
 
     curl -XDELETE http://localhost:8081/users/[uuid]
+
+
+Create an asset:
+``curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 101, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"``
+
+
+
