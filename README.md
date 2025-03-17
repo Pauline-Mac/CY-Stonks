@@ -24,3 +24,18 @@ Get the details of one user:
 Delete a user:
 
     curl -XDELETE http://localhost:8081/users/[uuid]
+
+# Docker
+## Start container
+docker compose -f docker/docker-compose-postgres.yml up --wait
+
+## Initialize DB
+docker exec -i cy-stonks-db psql -U postgres -t < ddl-scripts/create_tables_postgres.sql
+
+# Database
+https://doc.akka.io/libraries/akka-persistence-r2dbc/current/overview.html
+
+docker compose -f docker/docker-compose-postgres.yml up --wait
+docker compose -f docker/docker-compose-postgres.yml down
+docker exec -i cy-stonks-db psql -U postgres -d cy-stonks-db < ddl-scripts/create_tables_postgres.sql
+docker exec -i cy-stonks-db psql -U postgres -d cy-stonks-db -c "\dt durable_state"

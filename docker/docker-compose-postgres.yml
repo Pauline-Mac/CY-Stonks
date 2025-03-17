@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: cy-stonks-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cy-stonks-db
+    healthcheck:
+      test: ['CMD', 'pg_isready', "-q", "-d", "postgres", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+      start_period: 5s
+      timeout: 5s
