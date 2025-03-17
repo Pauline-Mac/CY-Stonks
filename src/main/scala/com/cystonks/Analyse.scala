@@ -69,7 +69,7 @@ object Analyse {
       }
     }
   }
-  e
+
   def main(args: Array[String]): Unit = {
     fetchData().onComplete {
       case Success(data) =>

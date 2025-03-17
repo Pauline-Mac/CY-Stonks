@@ -8,12 +8,16 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.Route._
+import akka.http.scaladsl.server.Directives._
 
 import com.cystonks.actors.httpservermanager.HttpServerManager
 import com.cystonks.actors.httpservermanager.HttpServerManager._
 import com.cystonks.actors.user.UserRegistry
 import com.cystonks.actors.user.UserRegistry._
 import com.cystonks.routes.UserRoutes
+import com.cystonks.actors.asset.AssetRegistry
+import com.cystonks.actors.asset.AssetRegistry._
+import com.cystonks.routes.AssetRoutes
 
 import scala.util.Failure
 import scala.util.Success
@@ -28,12 +32,17 @@ object HttpServer {
       Behaviors.receiveMessage {
         case SessionGranted(handle) =>
           val userRegistry = context.spawn(UserRegistry(), "UserRegistry")
-          val routes = new UserRoutes(userRegistry)(context.system)
+          val userRoutes = new UserRoutes(userRegistry)(context.system)
+
+          val assetRegistry = context.spawn(AssetRegistry(), "AssetRegistry")
+          val assetRoutes = new AssetRoutes(assetRegistry)(context.system)
+
+          val combinedRoutes = userRoutes.userRoutes ~ assetRoutes.assetRoutes
 
           // newServerAt(anyIpAdress, port)
           // 0.0.0.0 to be accessible from any IP address
           // localhost or 127.0.0.1 to be accessible only from the same machine
-          val futureBinding = Http().newServerAt("0.0.0.0", 8081).bind(routes.userRoutes)
+          val futureBinding = Http().newServerAt("0.0.0.0", 8081).bind(combinedRoutes)
 
           futureBinding.onComplete {
             case Success(binding) =>
