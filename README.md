@@ -7,6 +7,14 @@ https://doc.akka.io/
 
 ## Run the project
 
+`docker-compose up --build`
+
+### Restart the database
+
+`docker-compose down
+docker volume rm cy-stonks_postgres_data
+docker-compose up --build`
+
 Start an sbt environnement `sbt`
 Start the server `reStart`
 
