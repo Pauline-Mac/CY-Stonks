@@ -21,6 +21,7 @@ import com.cystonks.routes.AssetRoutes
 import com.cystonks.actors.portfolio.PortfolioRegistry
 import com.cystonks.actors.portfolio.PortfolioRegistry._
 import com.cystonks.routes.PortfolioRoutes
+import com.cystonks.routes.MarketAnalysisRoutes
 
 import scala.util.Failure
 import scala.util.Success
@@ -43,7 +44,13 @@ object HttpServer {
           val portfolioRegistry = context.spawn(PortfolioRegistry(), "PortfolioRegistry")
           val portfolioRoutes = new PortfolioRoutes(portfolioRegistry)(context.system)
 
-          val combinedRoutes = userRoutes.userRoutes ~ assetRoutes.assetRoutes ~ portfolioRoutes.portfolioRoutes
+          val marketAnalysisRoutes = new MarketAnalysisRoutes()(context.system)
+
+          val combinedRoutes =
+            userRoutes.userRoutes ~
+              assetRoutes.assetRoutes ~
+              portfolioRoutes.portfolioRoutes~
+              marketAnalysisRoutes.routes
 
 
           // newServerAt(anyIpAdress, port)

@@ -160,7 +160,7 @@ object AssetRegistry {
       case CreateAsset(asset, replyTo) =>
         val assetWithPriceFuture = if (asset.purchasePrice <= 0) {
           AlphaVantageClient.getPrice(asset.assetSymbol, asset.assetType).map { priceOpt =>
-            asset.copy(purchasePrice = priceOpt.getOrElse(asset.purchasePrice))
+            asset.copy(purchasePrice = priceOpt.map(BigDecimal(_)).getOrElse(asset.purchasePrice))
           }
         } else {
           Future.successful(asset)

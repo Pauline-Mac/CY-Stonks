@@ -41,7 +41,7 @@ object PortfolioRegistry {
           insertFuture.onComplete {
             case Success(_) =>
               replyTo ! ActionPerformed(s"Portfolio ${portfolio.portfolioId} created.")
-              context.self ! UpdateRegistry(portfolio)
+              context.self ! UpdateRegistry(Set(portfolio))
             case Failure(ex) =>
               replyTo ! ActionPerformed(s"Failed to create portfolio ${portfolio.portfolioId}: ${ex.getMessage}")
           }
