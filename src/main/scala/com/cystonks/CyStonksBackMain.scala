@@ -4,6 +4,8 @@ import slick.jdbc.PostgresProfile.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 import akka.NotUsed
 import akka.actor.typed.ActorRef
@@ -54,13 +56,50 @@ object Main {
     }
 
   def testDatabaseConnection(db: Database)(implicit ec: ExecutionContext): Unit = {
-    val action = sql"SELECT 1".as[Int]
-    val result: Future[Vector[Int]] = db.run(action)
+    val testQuery = sql"SELECT 1".as[Int]
 
-    result.onComplete({
-      case scala.util.Success(value) => println(s"Database connection successful! Result: $value")
-      case scala.util.Failure(exception) => println(s"Database connection failed: ${exception.getMessage}")
-    })(ec)
+    val explicitEC = ec
+
+    db.run(testQuery).map { result =>
+      println(s"Database connection successful! Result: $result")
+
+      try {
+        val insertUserAction =
+          sqlu"""
+          INSERT INTO users (username, password_hash)
+          VALUES ('test_user', 'hashed_password_placeholder')
+          ON CONFLICT (username) DO NOTHING
+        """
+
+        val insertFuture = db.run(insertUserAction)
+        Await.result(insertFuture, 5.seconds)
+        println("Attempted to add a test user")
+
+        val usersFuture = db.run(sql"""SELECT user_id, username FROM users""".as[(Int, String)])
+        val users = Await.result(usersFuture, 5.seconds)
+        println("=== USERS TABLE ===")
+        if (users.isEmpty) println("No users found")
+        else users.foreach(user => println(s"User ID: ${user._1}, Username: ${user._2}"))
+
+        val portfoliosFuture = db.run(sql"""SELECT portfolio_id, user_id, portfolio_name FROM portfolios""".as[(Int, Int, String)])
+        val portfolios = Await.result(portfoliosFuture, 5.seconds)
+        println("=== PORTFOLIOS TABLE ===")
+        if (portfolios.isEmpty) println("No portfolios found")
+        else portfolios.foreach(p => println(s"Portfolio ID: ${p._1}, User ID: ${p._2}, Name: ${p._3}"))
+
+        val assetsFuture = db.run(sql"""SELECT asset_id, portfolio_id, asset_type, asset_symbol, quantity, purchase_price FROM assets""".as[(Int, Int, String, String, BigDecimal, BigDecimal)])
+        val assets = Await.result(assetsFuture, 5.seconds)
+        println("=== ASSETS TABLE ===")
+        if (assets.isEmpty) println("No assets found")
+        else assets.foreach(a => println(s"Asset ID: ${a._1}, Portfolio ID: ${a._2}, Type: ${a._3}, Symbol: ${a._4}, Quantity: ${a._5}, Purchase Price: ${a._6}"))
+
+        println("All database operations completed successfully")
+      } catch {
+        case e: Exception => println(s"Error during database operations: ${e.getMessage}")
+      }
+    }(explicitEC).recover {
+      case exception => println(s"Initial database connection failed: ${exception.getMessage}")
+    }(explicitEC)
   }
 
   def main(args: Array[String]): Unit = {
