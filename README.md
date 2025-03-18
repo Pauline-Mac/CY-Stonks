@@ -16,7 +16,7 @@ List all users:
 
 Create a user:
 
-    curl -XPOST http://localhost:8081/users -d '{"uuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "username": "Liselott", "password": "cy-stonks", "wallets": ["2d74bc0a-22b4-4892-907c-53e247bbb2d6", "b4f13f99-377c-4cd8-9975-7b40aa613074"], "financialInterests": ["afa7c024-e548-4085-b46c-589d3661d41b"]}' -H "Content-Type:application/json"
+    curl -XPOST http://localhost:8081/users -d '{"uuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "username": "Liselott", "password": "cy-stonks", "wallets": [1, 2], "financialInterests": ["afa7c024-e548-4085-b46c-589d3661d41b"]}' -H "Content-Type:application/json"
 
 Get the details of one user:
 
@@ -27,7 +27,7 @@ Delete a user:
 
 
 Create an asset:
-``curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 101, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"``
+``curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 1, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"``
 
 Create a portfolio:
 ``curl -XPOST http://localhost:8081/portfolios -d '{"portfolioId": 1, "userUuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "name": "First portfolio"}' -H "Content-Type:application/json" ``

@@ -1,47 +1,31 @@
 package com.cystonks
+
 import com.typesafe.config.ConfigFactory
+import slick.jdbc.{GetResult, PostgresProfile}
 import slick.jdbc.PostgresProfile.api._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
-
-import akka.NotUsed
-import akka.actor.typed.ActorRef
-import akka.actor.typed.ActorSystem
-import akka.actor.typed.Behavior
-import akka.actor.typed.Terminated
+import java.util.UUID
+import akka.actor.typed.{ActorSystem, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
-
-import java.net.URLEncoder
-import java.io.UnsupportedEncodingException
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
-
 import com.cystonks.actors.httpserver.HttpServer
 import com.cystonks.actors.httpservermanager.HttpServerManager
+import com.cystonks.config.DatabaseConfig.db
 
 object Main {
 
-  val config = ConfigFactory.load()
+  private val config = ConfigFactory.load()
 
-  val dbConfig = config.getConfig("slick.dbs.default.db")
-  val dbUrl = dbConfig.getString("url")
-  val dbUser = dbConfig.getString("user")
-  val dbPassword = dbConfig.getString("password")
-  val dbDriver = dbConfig.getString("driver")
+  private val dbConfig = config.getConfig("slick.dbs.default.db")
+  println(s"Database URL: ${dbConfig.getString("url")}")
+  println(s"Database User: ${dbConfig.getString("user")}")
+  println(s"Database Password: ${dbConfig.getString("password")}")
+  println(s"Database Driver: ${dbConfig.getString("driver")}")
 
-  println(s"Database URL: $dbUrl")
-  println(s"Database User: $dbUser")
-  println(s"Database Password: $dbPassword")
-  println(s"Database Driver: $dbDriver")
+  testDatabaseConnection()
 
-  val db = Database.forURL(dbUrl, driver = dbDriver, user = dbUser, password = dbPassword)
-
-  testDatabaseConnection(db)
-
-  def apply(): Behavior[NotUsed] =
+  def apply(): Behavior[akka.NotUsed] =
     Behaviors.setup { context =>
       val httpServerManager = context.spawn(HttpServerManager(), "ServerManager")
       val httpServer = context.spawn(HttpServer(), "HTTPServer1")
@@ -49,39 +33,45 @@ object Main {
       httpServerManager ! HttpServerManager.GetSession("HTTPServer1", httpServer)
 
       Behaviors.receiveSignal {
-        case (_, Terminated(_)) =>
+        case (_, akka.actor.typed.Terminated(_)) =>
           context.system.log.info("HTTPServer terminated")
           Behaviors.stopped
       }
     }
 
-  def testDatabaseConnection(db: Database)(implicit ec: ExecutionContext): Unit = {
+  def testDatabaseConnection(): Unit = {
     val testQuery = sql"SELECT 1".as[Int]
-
-    val explicitEC = ec
 
     db.run(testQuery).map { result =>
       println(s"Database connection successful! Result: $result")
 
       try {
+        val testUserId = UUID.randomUUID()
+        val testUserIdStr = testUserId.toString
+
         val insertUserAction =
           sqlu"""
-          INSERT INTO users (username, password_hash)
-          VALUES ('test_user', 'hashed_password_placeholder')
-          ON CONFLICT (username) DO NOTHING
-        """
+                INSERT INTO users (user_id, username, password_hash)
+                VALUES (uuid($testUserIdStr), 'test_user', 'hashed_password_placeholder')
+                ON CONFLICT (username) DO NOTHING
+              """
 
         val insertFuture = db.run(insertUserAction)
         Await.result(insertFuture, 5.seconds)
         println("Attempted to add a test user")
 
-        val usersFuture = db.run(sql"""SELECT user_id, username FROM users""".as[(Int, String)])
+        implicit val getUUID: GetResult[UUID] = GetResult(r => r.nextObject().asInstanceOf[UUID])
+        implicit val getUUIDStringTuple: GetResult[(UUID, String)] = GetResult(r =>
+          (r.nextObject().asInstanceOf[UUID], r.nextString())
+        )
+
+        val usersFuture = db.run(sql"""SELECT user_id, username FROM users""".as[(UUID, String)])
         val users = Await.result(usersFuture, 5.seconds)
         println("=== USERS TABLE ===")
         if (users.isEmpty) println("No users found")
         else users.foreach(user => println(s"User ID: ${user._1}, Username: ${user._2}"))
 
-        val portfoliosFuture = db.run(sql"""SELECT portfolio_id, user_id, portfolio_name FROM portfolios""".as[(Int, Int, String)])
+        val portfoliosFuture = db.run(sql"""SELECT portfolio_id, user_id, portfolio_name FROM portfolios""".as[(Int, UUID, String)])
         val portfolios = Await.result(portfoliosFuture, 5.seconds)
         println("=== PORTFOLIOS TABLE ===")
         if (portfolios.isEmpty) println("No portfolios found")
@@ -97,16 +87,16 @@ object Main {
       } catch {
         case e: Exception => println(s"Error during database operations: ${e.getMessage}")
       }
-    }(explicitEC).recover {
+    }.recover {
       case exception => println(s"Initial database connection failed: ${exception.getMessage}")
-    }(explicitEC)
+    }
   }
 
   def main(args: Array[String]): Unit = {
     ActorSystem(Main(), "CyStonksBack")
   }
-
 }
+
 
 // WIP
 // private def alphavantage()(implicit system: ActorSystem[_]): Unit = {
