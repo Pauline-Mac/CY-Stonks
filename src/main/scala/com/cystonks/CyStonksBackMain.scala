@@ -1,4 +1,9 @@
 package com.cystonks
+import com.typesafe.config.ConfigFactory
+import slick.jdbc.PostgresProfile.api._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 import akka.NotUsed
 import akka.actor.typed.ActorRef
@@ -16,6 +21,24 @@ import com.cystonks.actors.httpserver.HttpServer
 import com.cystonks.actors.httpservermanager.HttpServerManager
 
 object Main {
+
+  val config = ConfigFactory.load()
+
+  val dbConfig = config.getConfig("slick.dbs.default.db")
+  val dbUrl = dbConfig.getString("url")
+  val dbUser = dbConfig.getString("user")
+  val dbPassword = dbConfig.getString("password")
+  val dbDriver = dbConfig.getString("driver")
+
+  println(s"Database URL: $dbUrl")
+  println(s"Database User: $dbUser")
+  println(s"Database Password: $dbPassword")
+  println(s"Database Driver: $dbDriver")
+
+  val db = Database.forURL(dbUrl, driver = dbDriver, user = dbUser, password = dbPassword)
+
+  testDatabaseConnection(db)
+
   def apply(): Behavior[NotUsed] =
     Behaviors.setup { context =>
       val httpServerManager = context.spawn(HttpServerManager(), "ServerManager")
@@ -29,6 +52,16 @@ object Main {
           Behaviors.stopped
       }
     }
+
+  def testDatabaseConnection(db: Database)(implicit ec: ExecutionContext): Unit = {
+    val action = sql"SELECT 1".as[Int]
+    val result: Future[Vector[Int]] = db.run(action)
+
+    result.onComplete({
+      case scala.util.Success(value) => println(s"Database connection successful! Result: $value")
+      case scala.util.Failure(exception) => println(s"Database connection failed: ${exception.getMessage}")
+    })(ec)
+  }
 
   def main(args: Array[String]): Unit = {
     ActorSystem(Main(), "CyStonksBack")

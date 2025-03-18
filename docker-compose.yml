@@ -23,7 +23,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DATABASE_URL: "jdbc:postgresql://postgres:5432/cy_stonks"
+      DATABASE_URL: "jdbc:postgresql://cy_stonks_db:5432/cy_stonks"
       DATABASE_USER: "cy_stonks_user"
       DATABASE_PASSWORD: "cytech0001"
     ports:

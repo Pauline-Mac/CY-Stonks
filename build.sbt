@@ -28,6 +28,11 @@ lazy val root = (project in file(".")).
       "ch.qos.logback"    % "logback-classic"           % "1.4.14",
       "io.spray"         %% "spray-json"                % "1.3.6",
 
+      "com.typesafe.slick" %% "slick" % "3.4.1",
+      "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
+      "org.postgresql" % "postgresql" % "42.3.1",
+      "com.typesafe" % "config" % "1.4.1",
+
 
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
