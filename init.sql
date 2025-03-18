@@ -22,6 +22,14 @@ CREATE TABLE IF NOT EXISTS assets (
                                       purchase_price DECIMAL(20, 8)  -- the price at which the asset was bought
 );
 
+CREATE TABLE IF NOT EXISTS market_data (
+                                           id SERIAL PRIMARY KEY,
+                                           asset_symbol VARCHAR(20) NOT NULL,
+                                           price DOUBLE PRECISION NOT NULL,
+                                           timestamp TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE INDEX idx_market_data_symbol_timestamp ON market_data(asset_symbol, timestamp DESC);
+
 -- Trigger to update portfolio_ids when a portfolio is added
 CREATE OR REPLACE FUNCTION add_portfolio_to_user()
     RETURNS TRIGGER AS $$

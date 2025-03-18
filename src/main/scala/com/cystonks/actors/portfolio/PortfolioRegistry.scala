@@ -14,7 +14,6 @@ object PortfolioRegistry {
   final case class CreatePortfolio(portfolio: Portfolio, replyTo: ActorRef[ActionPerformed]) extends Command
   final case class GetPortfolio(portfolioId: Int, replyTo: ActorRef[GetPortfolioResponse]) extends Command
   final case class DeletePortfolio(portfolioId: Int, replyTo: ActorRef[ActionPerformed]) extends Command
-
   final case class GetPortfolioResponse(maybePortfolio: Option[Portfolio])
   final case class ActionPerformed(description: String)
 
@@ -49,18 +48,33 @@ object PortfolioRegistry {
 
           Behaviors.same
 
-        case UpdateRegistry(portfolio) =>
-          registry(portfolios + portfolio) // Return a new `Behavior` with the updated registry
+        case UpdateRegistry(updatedPortfolios) =>
+          registry(updatedPortfolios) // Return a new `Behavior` with the updated registry
 
         case GetPortfolio(portfolioId, replyTo) =>
           replyTo ! GetPortfolioResponse(portfolios.find(_.portfolioId == portfolioId))
           Behaviors.same
 
         case DeletePortfolio(portfolioId, replyTo) =>
-          replyTo ! ActionPerformed(s"Portfolio $portfolioId deleted.")
-          registry(portfolios.filterNot(_.portfolioId == portfolioId))
+          val deletePortfolioAction =
+            sqlu"""
+            DELETE FROM portfolios WHERE portfolio_id = $portfolioId
+          """
+          val deleteFuture: Future[Int] = db.run(deletePortfolioAction)
+          deleteFuture.onComplete {
+            case Success(rowsAffected) =>
+              if (rowsAffected > 0) {
+                replyTo ! ActionPerformed(s"Portfolio $portfolioId deleted.")
+                context.self ! UpdateRegistry(portfolios.filterNot(_.portfolioId == portfolioId))
+              } else {
+                replyTo ! ActionPerformed(s"Portfolio $portfolioId not found.")
+              }
+            case Failure(ex) =>
+              replyTo ! ActionPerformed(s"Failed to delete portfolio $portfolioId: ${ex.getMessage}")
+          }
+          Behaviors.same
       }
     }
 
-  private final case class UpdateRegistry(portfolio: Portfolio) extends Command
+  private final case class UpdateRegistry(updatedPortfolios: Set[Portfolio]) extends Command
 }
