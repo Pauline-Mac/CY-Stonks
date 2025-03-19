@@ -1,13 +1,13 @@
 # CY stonks Back 2025 - 2026
-MACEIRAS Pauline
-CARDENAS TEMIQUEL Donovan
+
+MACEIRAS Pauline  CARDENAS TEMIQUEL Donovan
 
 Useful Documentation :
 https://doc.akka.io/
 
 ## Run the project
 
-`docker-compose up --build`
+    docker-compose up --build
 
 ### Restart the database
 
@@ -17,6 +17,8 @@ docker-compose up --build`
 
 Start an sbt environnement `sbt`
 Start the server `reStart`
+
+## Commands
 
 List all users:
 
@@ -35,9 +37,12 @@ Delete a user:
 
 
 Create an asset:
-``curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 1, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"``
+
+    curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 1, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"
+
 
 Create a portfolio:
-``curl -XPOST http://localhost:8081/portfolios -d '{"portfolioId": 1, "userUuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "name": "First portfolio"}' -H "Content-Type:application/json" ``
+
+    curl -XPOST http://localhost:8081/portfolios -d '{"portfolioId": 1, "userUuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "name": "First portfolio"}' -H "Content-Type:application/json"
 
 
