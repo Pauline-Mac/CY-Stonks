@@ -46,3 +46,6 @@ Create a portfolio:
     curl -XPOST http://localhost:8081/portfolios -d '{"portfolioId": 1, "userUuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "name": "First portfolio"}' -H "Content-Type:application/json"
 
 
+Get analysis on a specific asset:
+
+    curl http://localhost:8081/analyse/{symmbol}
