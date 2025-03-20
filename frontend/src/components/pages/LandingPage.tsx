@@ -19,19 +19,26 @@ export default function App(props: LandingPageProps): React.ReactElement {
   const symbol = queryParams.get('symbol') || 'demo';
   const backendUrl = `http://localhost:8081/analyse/${symbol}`;
   useEffect(() => {
-    fetch(backendUrl)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((response) => response as unknown as AssetsData)
-      .then((response) => setAssetData(response))
-      .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
-        setError(error.message);
-      });
+    const fetchData = () => {
+      fetch(backendUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((response) => response as unknown as AssetsData)
+        .then((response) => setAssetData(response))
+        .catch((error) => {
+          console.error('There was a problem with the fetch operation:', error);
+          setError(error.message);
+        });
+    };
+
+    fetchData();
+    const intervalId = setInterval(fetchData, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   if (error && !props.demo) {

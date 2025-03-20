@@ -20,6 +20,7 @@ export default function ExchangeRateCard(props: ExchangeRateCardProps): React.Re
   return (
     <main className='flex flex-col gap-2' >
       <h2 className='text-xl text-center font-semibold'>Evolution du prix par jour</h2>
+      <p className='text-gray-500 text-sm text-center'>Last time refreshed: {new Date().toLocaleString()}</p>
       <div className=''>
         <Chart {...chartProps} />
       </div>
