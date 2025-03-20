@@ -13,12 +13,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-
-  app:
-    container_name: cy_stonks_app
+      - ./app/backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+  backend:
+    container_name: cy_stonks_backend
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     depends_on:
       - postgres
@@ -29,9 +28,20 @@ services:
     ports:
       - "8081:8081"  # Map the container's port 8081 to the host's port 8081
     volumes:
-      - .:/app
+      - ./backend:/app
     working_dir: /app
-
+  frontend:
+    container_name: cy_stonks_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    environment:
+      NODE_ENV: "production"
 volumes:
   postgres_data:
     driver: local
