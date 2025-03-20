@@ -1,8 +1,95 @@
 import React, { } from 'react'
 import SideMenu from 'src/components/organisms/SideMenu'
-import ExchangeRateCard, { ExchangeRateCardProps } from 'src/components/organisms/ExchangeRateCard'
 import { useEffect, useState } from "react";
 import LoadingScreen from 'components/pages/LoadingScreen';
+import ErrorScreen from 'components/pages/ErrorScreen';
+import ExchangeRateCard, { ExchangeRateCardProps } from 'src/components/organisms/ExchangeRateCard';
+import AssetsInformationCards, { AssetsInformationCardsProps } from '../organisms/AssetsInformationCards';
+import MainTitle from 'components/organisms/MainTitle';
+
+interface LandingPageProps {
+  demo: boolean;
+}
+
+export default function App(props: LandingPageProps): React.ReactElement {
+  const [assetsData, setAssetData] = useState<AssetsData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const queryParams = new URLSearchParams(window.location.search);
+
+  const symbol = queryParams.get('symbol') || 'demo';
+  const backendUrl = `http://localhost:8081/analyse/${symbol}`;
+  useEffect(() => {
+    fetch(backendUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((response) => response as unknown as AssetsData)
+      .then((response) => setAssetData(response))
+      .catch((error) => {
+        console.error('There was a problem with the fetch operation:', error);
+        setError(error.message);
+      });
+  }, []);
+
+  if (error && !props.demo) {
+    return (
+      <div>
+        <ErrorScreen message={"Something went wrong fetching the data..."} />
+      </div>
+    );
+  }
+
+  if (!assetsData && !props.demo) {
+    return (
+      <div>
+        <LoadingScreen />
+      </div>
+    );
+  }
+
+  const assetsDataMockedProps = {
+    assets: [
+      assetsMockData,
+      assetsMockData2
+    ]
+  }
+
+  const assetsDataProdProps = {
+    assets: [
+      assetsData || assetsMockData,
+    ]
+  }
+
+  const AssetsInformationCardsProps: AssetsInformationCardsProps = props.demo ? assetsDataMockedProps : assetsDataProdProps;
+  const exchangeRateCardProps: ExchangeRateCardProps = props.demo ? assetsDataMockedProps : assetsDataProdProps;
+
+  return (
+    <div className='size-full flex flex-row overflow-x-hidden'>
+      <div className='max-h-screen p-5 flex-1/6 flex flex-col justify-between sticky top-0'>
+        <SideMenu />
+      </div>
+      <main className='flex-5/6 py-5 px-10'>
+        <div className='h-full flex flex-col gap-8'>
+          <MainTitle />
+          <hr className='text-gray-300' />
+          <div className='flex flex-row gap-5 justify-center'>
+            <div className='size-7/10'>
+              <ExchangeRateCard {...exchangeRateCardProps} />
+            </div>
+          </div>
+          <hr className='text-gray-300' />
+          <div className='flex flex-row justify-center'>
+            <AssetsInformationCards {...AssetsInformationCardsProps} />
+          </div>
+          <div className='font-semibold text-center'>CY Stonks 💰</div>
+        </div>
+      </main>
+    </div>
+  );
+}
 
 export interface AssetsData {
   "symbol": string,
@@ -51,106 +138,6 @@ export interface AssetsData {
   }
 }
 
-
-export function MainTitle(): React.ReactElement {
-  const [username, setUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      fetch("http://localhost:8081/users/me", {
-        method: "GET",
-        headers: { "Authorization": `Bearer ${token}` },
-        credentials: "include",
-      })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("User not authenticated");
-            }
-            return response.json();
-          })
-          .then((data) => setUsername(data.username))
-          .catch(() => setUsername(null));
-    }
-  }, []);
-
-  return (
-      <header className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold italic">
-          Suivez, Analysez et Faites Croître Votre Patrimoine
-        </h2>
-        <div className="flex items-center gap-5">
-          <input type="text" className="outline-none border p-2 rounded" placeholder="🕵️‍♀️ Chercher en bourse" />
-
-          {username ? (
-              <span className="text-lg font-medium">👤 {username}</span>
-          ) : (
-              <a href="/login" className="text-blue-500 hover:underline">Se connecter</a>
-          )}
-        </div>
-      </header>
-  );
-}
-
-
-function TrendingAssetsCard(): React.ReactElement {
-  return (
-    <main className='flex-1/2 flex flex-col gap-2'>
-      <div className='flex justify-between'>
-        <h2 className='text-m font-semibold'>Tendance</h2>
-        <p className='text-m text-gray-500'>Tout voir →</p>
-      </div>
-      <div className='h-full bg-gray-200 rounded-lg'></div>
-    </main>
-  );
-}
-
-function MostProfitableAssetsCard(): React.ReactElement {
-  return (
-    <main className='flex-1/2 flex flex-col gap-2'>
-      <div className='flex justify-between'>
-        <h2 className='text-m font-semibold'>Plus profitables</h2>
-        <p className='text-m text-gray-500'>Tout voir →</p>
-      </div>
-      <div className='h-full flex flex-row gap-2'>
-        <div className='h-full w-full bg-gray-200 rounded-lg'></div>
-        <div className='h-full w-full bg-gray-200 rounded-lg'></div>
-        <div className='h-full w-full bg-gray-200 rounded-lg'></div>
-        <div className='h-full w-full bg-gray-200 rounded-lg'></div>
-        <div className='h-full w-full bg-gray-200 rounded-lg'></div>
-      </div>
-    </main>
-  );
-}
-
-function NewsCard(): React.ReactElement {
-  return (
-    <main className='h-full flex flex-col gap-2'>
-      <h2 className='text-m font-semibold'>News</h2>
-      <div className='flex-1/4 grow bg-gray-200 rounded-lg'></div>
-      <div className='flex-1/4 bg-gray-200 rounded-lg'></div>
-      <div className='flex-1/4 bg-gray-200 rounded-lg'></div>
-      <div className='flex-1/4 bg-gray-200 rounded-lg'></div>
-    </main>
-  );
-}
-
-function PortfolioCard(): React.ReactElement {
-  return (
-    <main className='flex-1/2 flex flex-col gap-2'>
-      <div className='flex justify-between'>
-        <h2 className='text-m text-m font-semibold'>Mon portefeuille</h2>
-        <p className='text-m text-gray-500'>Tout plus →</p>
-      </div>
-      <div className='h-full flex gap-5'>
-        <div className='size-full bg-gray-200 rounded-lg flex-1'></div>
-        <div className='size-full bg-gray-200 rounded-lg flex-1'></div>
-      </div>
-    </main>
-  );
-}
-
 const assetsMockData = {
   "symbol": "AAPL",
   "assetType": "Stock",
@@ -179,7 +166,6 @@ const assetsMockData = {
       "date": "2023-09-26",
       "price": 50
     },
-    // More historical prices...
   ],
   "technicalAnalysis": {
     "rsi": {
@@ -281,75 +267,4 @@ const assetsMockData2 = {
     "mediumTerm": "Hold",
     "overallTrend": "Bullish"
   }
-}
-
-interface LandingPageProps {
-  demo: boolean;
-}
-
-export default function App(props: LandingPageProps): React.ReactElement {
-  const [assetsData, setAssetData] = useState<AssetsData | null>(null);
-
-  useEffect(() => {
-    fetch("http://localhost:8081/analyse/ibm")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then((response) => response as unknown as AssetsData)
-      .then((response) => setAssetData(response))
-      .catch((error) => {
-        console.error('There was a problem with the fetch operation:', error);
-      });
-  }, []);
-
-  console.log(assetsData);
-
-  if (!assetsData) {
-    return (
-      <div>
-        <LoadingScreen />
-      </div>
-    );
-  }
-
-  const assetsDataMockedProps = {
-    assets: [
-      assetsMockData,
-      assetsMockData2
-    ]
-  }
-
-  const assetsDataProdProps = {
-    assets: [
-      assetsData,
-    ]
-  }
-
-  const ExchangeRateCardProps: ExchangeRateCardProps = props.demo ? assetsDataMockedProps : assetsDataProdProps;
-  return (
-    <div className='min-h-screen flex flex-row overflow-x-hidden'>
-      <SideMenu />
-      <main className='flex-5/6 py-5 px-10'>
-        <div className='h-full flex flex-col gap-5'>
-          <MainTitle />
-          <div className='flex-1/2 flex flex-row gap-5'>
-            <div className='flex-1/2 flex flex-col gap-2'>
-              <TrendingAssetsCard />
-              <MostProfitableAssetsCard />
-            </div>
-            <div className='flex-1/2'>
-              <NewsCard />
-            </div>
-          </div>
-          <div className='flex-1/2 flex flex-row gap-5'>
-            <ExchangeRateCard {...ExchangeRateCardProps} />
-            <PortfolioCard />
-          </div>
-        </div >
-      </main >
-    </div >
-  );
 }

@@ -11,13 +11,10 @@ RUN npm install
 
 RUN npm i -g serve
 
-COPY . .
-
 RUN npm run build
+
+COPY . .
 
 EXPOSE 3000
 
-CMD [ "serve", "-s", "dist" ]
-
-# Ensure the dist directory is correctly served
-RUN mkdir -p /app/dist
+CMD ["serve", "-s", "dist"]

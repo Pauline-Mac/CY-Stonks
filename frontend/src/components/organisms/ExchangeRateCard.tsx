@@ -18,11 +18,9 @@ export default function ExchangeRateCard(props: ExchangeRateCardProps): React.Re
   }
 
   return (
-    <main className='flex-1/2 flex flex-col gap-2' >
-      <div className='flex justify-between'>
-        <h2 className='text-m font-semibold'>Evolution du prix par jour</h2>
-      </div>
-      <div className='h-full bg-gray-200 rounded-lg flex-1 flex justify-between align-center'>
+    <main className='flex flex-col gap-2' >
+      <h2 className='text-xl text-center font-semibold'>Evolution du prix par jour</h2>
+      <div className=''>
         <Chart {...chartProps} />
       </div>
     </main >

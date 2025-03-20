@@ -8,7 +8,7 @@ export default function LoadingScreen() {
         By Pauline, Jules & Donovan
       </span>
       <span className="text-blue-700">
-        For Ms. Djaouda
+        For Ms. Djaouida
       </span>
       <br />
       <CircularProgress className="mb-4" />

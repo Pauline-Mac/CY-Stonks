@@ -1,5 +1,5 @@
 ;
-import { VictoryChart, VictoryAxis, VictoryTheme, VictoryGroup, VictoryLine, VictoryScatter, VictoryLegend } from "victory";
+import { VictoryChart, VictoryAxis, VictoryTheme, VictoryGroup, VictoryLine, VictoryScatter, VictoryLegend, VictoryTooltip } from "victory";
 import _ from "lodash";
 
 export interface ChartProps {
@@ -40,6 +40,7 @@ export default function Chart(props: ChartProps): React.ReactElement {
 
   return (
     <VictoryChart
+
       padding={{
         top: 20,
         left: 70,
@@ -51,7 +52,7 @@ export default function Chart(props: ChartProps): React.ReactElement {
       <VictoryAxis
         style={{
           tickLabels: {
-            fontSize: 7,
+            fontSize: 6,
             angle: 45,
             padding: 20,
           },
@@ -72,10 +73,10 @@ export default function Chart(props: ChartProps): React.ReactElement {
           axis: {
             stroke: "transparent",
           },
-          axisLabel: {
-            fontSize: 8,
-            padding: 50,
-          },
+          // axisLabel: {
+          //   fontSize: 8,
+          //   padding: 50,
+          // },
           tickLabels: {
             fontSize: 8,
             padding: 20,
@@ -86,6 +87,11 @@ export default function Chart(props: ChartProps): React.ReactElement {
         <VictoryGroup
           data={curreny_serie.data}
           key={i}
+          labelComponent={
+            <VictoryTooltip
+              style={{ fontSize: 10 }}
+            />
+          }
         >
           <VictoryLine
             style={{
@@ -96,7 +102,7 @@ export default function Chart(props: ChartProps): React.ReactElement {
             }}
           />
           <VictoryScatter
-            size={2}
+            size={3}
             style={{
               data: {
                 fill: VictoryTheme.clean.palette?.qualitative?.[i] || "blue",
@@ -106,9 +112,9 @@ export default function Chart(props: ChartProps): React.ReactElement {
         </VictoryGroup>
       ))}
       <VictoryLegend
-        itemsPerRow={4}
-        x={0}
-        y={270}
+        itemsPerRow={8}
+        x={20}
+        y={260}
         data={series.map((s, i) => ({
           name: s.name,
           symbol: {

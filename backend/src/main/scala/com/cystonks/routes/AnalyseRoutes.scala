@@ -69,8 +69,11 @@ class MarketAnalysisRoutes(implicit val system: ActorSystem[_]) {
       ("TIME_SERIES_DAILY", s"&symbol=IBM", "Stock")
     }
 
-    // val apiUrl = s"https://www.alphavantage.co/query?function=$function$apiParams&apikey=$apiKey"
-    val apiUrl = s"https://www.alphavantage.co/query?function=$function$apiParams&apikey=demo"
+    val apiUrl = if (symbol.toLowerCase == "demo") {
+      s"https://www.alphavantage.co/query?function=$function$apiParams&apikey=demo"
+    } else {
+      s"https://www.alphavantage.co/query?function=$function$apiParams&apikey=$apiKey"
+    }
 
     val request = HttpRequest(uri = apiUrl)
     Http().singleRequest(request).flatMap { response =>
