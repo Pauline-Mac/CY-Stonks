@@ -24,19 +24,17 @@ export default function LoginForm() {
             }
 
             const data = await response.json();
-            localStorage.setItem("token", data.token);
+            localStorage.setItem("token", data.token); // Enregistre le token dans le localStorage
+            localStorage.setItem("uuid", data.user.uuid);   // Enregistre l'UUID dans le localStorage
 
             navigate("/");
-        }
-
-        catch (error) {
+        } catch (error) {
             if (error instanceof Error) {
                 setError(error.message);
             } else {
                 console.error("Une erreur inconnue est survenue.");
             }
         }
-
     };
 
     return (
