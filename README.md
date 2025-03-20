@@ -1,96 +1,65 @@
-# CY stonks Back 2025 - 2026
+<h1>CY Stonks Back 2025 - 2026</h1>
+<p><strong>MACEIRAS Pauline, CARDENAS TEMIQUEL Donovan, BELLÊTRE Jules</strong></p>
 
-MACEIRAS Pauline  CARDENAS TEMIQUEL Donovan  BELLÊTRE Jules
+<h2>Summary</h2>
+<p>The <strong>CY Stonks Back</strong> project is a platform for managing and analyzing financial assets in a portfolio. The application includes user account management, asset analysis, and a secure login/logout system.</p>
 
+<h2>1 - Setup & Start</h2>
 
-## Summary
+<h3>Running the Project</h3>
+<pre>docker-compose up --build</pre>
 
-## 1 - Setup & Start
-
-## 2 - Features
-
-##      Loginand logout
-
-##      Account management
-
-##      Data visualisation + analyse
-
-
-
-
-
-## 1 - Setup & start
-
-## Run the project
-
-    docker-compose up --build
-
-### Restart the database
-
-`docker-compose down
+<h3>Restarting the Database</h3>
+<pre>docker-compose down
 docker volume rm cy-stonks_postgres_data
-docker-compose up --build`
+docker-compose up --build</pre>
 
-Start an sbt environnement `sbt`
-Start the server `reStart`
+<h3>SBT Environment</h3>
+<p>To access the SBT environment and start the server:</p>
+<pre>sbt</pre>
+<p>Then, start the server with:</p>
+<pre>reStart</pre>
 
+<h2>2 - Features</h2>
 
-## 2 - Features
+<h3>Login and Logout</h3>
 
+<h4>User Login:</h4>
+<pre>curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json"</pre>
+<p><strong>Note:</strong> If using a basic curl version, add <code>-c cookies.txt</code> at the end.</p>
 
-## Login and logout
+<h4>Logout:</h4>
+<pre>curl http://localhost:8081/users/logout</pre>
+<p><strong>Note:</strong> If using a basic curl version, add <code>-b cookies.txt</code> at the end.</p>
 
-Login to a user : 
+<h3>User Account Management</h3>
 
-    curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json" 
-if just curl version add `-c cookies.txt` at the end
+<h4>List all users:</h4>
+<pre>curl http://localhost:8081/users</pre>
 
-Logout : 
+<h4>Create a user:</h4>
+<pre>curl -XPOST http://localhost:8081/users -d '{"uuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "username": "Liselott", "password": "cy-stonks", "wallets": [1, 2], "financialInterests": ["afa7c024-e548-4085-b46c-589d3661d41b"]}' -H "Content-Type:application/json"</pre>
 
-    curl http://localhost:8081/users/logout
-if just curl version add `-b cookies.txt` at the end
+<h4>Retrieve details of a specific user:</h4>
+<pre>curl http://localhost:8081/users/[uuid]</pre>
 
+<h4>Delete a user:</h4>
+<pre>curl -XDELETE http://localhost:8081/users/[uuid]</pre>
 
-## Account management
+<h4>Get information about the currently logged-in user:</h4>
+<pre>curl http://localhost:8081/users/me</pre>
+<p><strong>Note:</strong> If using a basic curl version, add <code>-b cookies.txt</code> at the end.</p>
 
-List all users:
+<h3>Data Visualization and Analysis</h3>
 
-    curl http://localhost:8081/users
+<h4>Create an asset:</h4>
+<pre>curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 1, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"</pre>
 
-Create a user:
+<h4>Create a portfolio:</h4>
+<pre>curl -XPOST http://localhost:8081/portfolios -d '{"portfolioId": 1, "userUuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "name": "First portfolio"}' -H "Content-Type:application/json"</pre>
 
-    curl -XPOST http://localhost:8081/users -d '{"uuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "username": "Liselott", "password": "cy-stonks", "wallets": [1, 2], "financialInterests": ["afa7c024-e548-4085-b46c-589d3661d41b"]}' -H "Content-Type:application/json"
+<h4>Get analysis on a specific asset:</h4>
+<pre>curl http://localhost:8081/analyse/{symbol}</pre>
 
-Get the details of one user:
-
-    curl http://localhost:8081/users/[uuid]
-
-Delete a user:
-
-    curl -XDELETE http://localhost:8081/users/[uuid]
-
-Get connected user information :
-
-    curl http://localhost:8081/users/me
-if just curl version add `-b cookies.txt` at the end
-
-
-## Data visualisation and analyse
-
-
-Create an asset:
-
-    curl -XPOST http://localhost:8081/assets -d '{"assetId": 1, "portfolioId": 1, "assetType": "Stock", "assetSymbol": "AAPL", "quantity": 10.5, "purchasePrice": 150.25 }' -H "Content-Type:application/json"
-
-
-Create a portfolio:
-
-    curl -XPOST http://localhost:8081/portfolios -d '{"portfolioId": 1, "userUuid": "a13d86f3-943c-4207-a4d6-9672d6ece0d8", "name": "First portfolio"}' -H "Content-Type:application/json"
-
-
-Get analysis on a specific asset:
-
-    curl http://localhost:8081/analyse/{symmbol}
-
-Useful Documentation :
-https://doc.akka.io/
+<h2>Conclusion</h2>
+<p>The <strong>CY Stonks Back</strong> project provides a robust infrastructure for managing and analyzing financial portfolios. Its integration with REST services ensures ease of use, and its numerous features cover a wide range of applications for asset management.</p>
