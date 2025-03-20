@@ -10,11 +10,12 @@ export default function LoginForm() {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setError("");
-
         try {
             const response = await fetch("http://localhost:8081/users/login", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({ username, password }),
                 credentials: "include",
             });
@@ -24,8 +25,29 @@ export default function LoginForm() {
             }
 
             const data = await response.json();
-            localStorage.setItem("token", data.token); // Enregistre le token dans le localStorage
-            localStorage.setItem("uuid", data.user.uuid);   // Enregistre l'UUID dans le localStorage
+            console.log("Réponse complète:", data);
+
+            localStorage.setItem("token", data.token);
+
+            // Une fois connecté, faites une seconde requête pour obtenir les informations de l'utilisateur
+            const userResponse = await fetch("http://localhost:8081/users/me", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${data.token}`
+                },
+                credentials: "include",
+            });
+
+            if (userResponse.ok) {
+                const userData = await userResponse.json();
+                console.log("Données utilisateur:", userData);
+
+                if (userData.uuid) {
+                    localStorage.setItem("uuid", userData.uuid);
+                } else {
+                    console.error("UUID non trouvé dans les données utilisateur");
+                }
+            }
 
             navigate("/");
         } catch (error) {
