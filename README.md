@@ -38,15 +38,19 @@ Delete a user:
 
 Login to a user : 
 
-    curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json"
+    curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json" 
+if just curl version add `-c cookies.txt` at the end
+
 
 Logout : 
 
-    curl -XDELETE http://localhost:8081/users/logout
+    curl http://localhost:8081/users/logout
+if just curl version add `-b cookies.txt` at the end
 
-Get connected user informations :
+Get connected user information :
 
-    curl -XDELETE http://localhost:8081/users/me
+    curl http://localhost:8081/users/me
+if just curl version add `-b cookies.txt` at the end
 
 Create an asset:
 
