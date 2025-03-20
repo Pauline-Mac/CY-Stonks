@@ -1,6 +1,4 @@
-import { CircularProgress } from '@mui/material';
-
-export default function LoadingScreen() {
+export default function ErrorScreen(props: { message: string }): React.ReactElement {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
       <h1 className="text-4xl font-bold text-gray-900 mb-4">CY Stonks</h1>
@@ -11,7 +9,7 @@ export default function LoadingScreen() {
         For Ms. Djaouida
       </span>
       <br />
-      <CircularProgress className="mb-4" />
+      <h2 className="text-xl">{props.message}</h2>
     </div>
   );
 }

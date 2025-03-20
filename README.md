@@ -1,9 +1,25 @@
 # CY stonks Back 2025 - 2026
 
-MACEIRAS Pauline  CARDENAS TEMIQUEL Donovan
+MACEIRAS Pauline  CARDENAS TEMIQUEL Donovan  BELLÊTRE Jules
 
-Useful Documentation :
-https://doc.akka.io/
+
+## Summary
+
+## 1 - Setup & Start
+
+## 2 - Features
+
+##      Loginand logout
+
+##      Account management
+
+##      Data visualisation + analyse
+
+
+
+
+
+## 1 - Setup & start
 
 ## Run the project
 
@@ -18,7 +34,24 @@ docker-compose up --build`
 Start an sbt environnement `sbt`
 Start the server `reStart`
 
-## Commands
+
+## 2 - Features
+
+
+## Login and logout
+
+Login to a user : 
+
+    curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json" 
+if just curl version add `-c cookies.txt` at the end
+
+Logout : 
+
+    curl http://localhost:8081/users/logout
+if just curl version add `-b cookies.txt` at the end
+
+
+## Account management
 
 List all users:
 
@@ -36,21 +69,14 @@ Delete a user:
 
     curl -XDELETE http://localhost:8081/users/[uuid]
 
-Login to a user : 
-
-    curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json" 
-if just curl version add `-c cookies.txt` at the end
-
-
-Logout : 
-
-    curl http://localhost:8081/users/logout
-if just curl version add `-b cookies.txt` at the end
-
 Get connected user information :
 
     curl http://localhost:8081/users/me
 if just curl version add `-b cookies.txt` at the end
+
+
+## Data visualisation and analyse
+
 
 Create an asset:
 
@@ -65,3 +91,6 @@ Create a portfolio:
 Get analysis on a specific asset:
 
     curl http://localhost:8081/analyse/{symmbol}
+
+Useful Documentation :
+https://doc.akka.io/
