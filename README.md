@@ -31,10 +31,22 @@ Create a user:
 Get the details of one user:
 
     curl http://localhost:8081/users/[uuid]
+
 Delete a user:
 
     curl -XDELETE http://localhost:8081/users/[uuid]
 
+Login to a user : 
+
+    curl -XPOST http://localhost:8081/users/login -d '{"username": "Liselott", "password": "cy-stonks"}' -H "Content-Type:application/json"
+
+Logout : 
+
+    curl -XDELETE http://localhost:8081/users/logout
+
+Get connected user informations :
+
+    curl -XDELETE http://localhost:8081/users/me
 
 Create an asset:
 

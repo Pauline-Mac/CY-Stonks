@@ -4,9 +4,11 @@ import akka.actor.typed.{ActorRef, Behavior}
 import akka.actor.typed.scaladsl.Behaviors
 import slick.jdbc.PostgresProfile.api._
 import com.cystonks.config.DatabaseConfig._
-import com.cystonks.models.{User, Users, Portfolio}
+import com.cystonks.models.{User, Users, Portfolio, LoginRequest, AuthenticationResponse}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
+import com.cystonks.utils.JwtUtils
+
 
 object UserRegistry {
   sealed trait Command
@@ -16,14 +18,13 @@ object UserRegistry {
   final case class DeleteUser(uuid: String, replyTo: ActorRef[ActionPerformed]) extends Command
   final case class GetUserPortfolios(userId: String, replyTo: ActorRef[GetUserPortfoliosResponse]) extends Command
 
+  final case class AuthenticateUser(loginRequest: LoginRequest, replyTo: ActorRef[AuthenticationResponse]) extends Command
   final case class GetUserResponse(maybeUser: Option[User])
   final case class GetUserPortfoliosResponse(portfolios: Seq[Portfolio])
   final case class ActionPerformed(description: String)
 
-  // Message interne pour mettre à jour le registre
   private final case class UpdateRegistry(user: User) extends Command
 
-  // Passer l'ExecutionContext explicitement
   def apply()(implicit ec: ExecutionContext): Behavior[Command] = registry(Set.empty)
 
   private def registry(users: Set[User])(implicit ec: ExecutionContext): Behavior[Command] =
@@ -34,12 +35,15 @@ object UserRegistry {
           Behaviors.same
 
         case CreateUser(user, replyTo) =>
+          val hashedPassword = JwtUtils.hashPassword(user.password)
+          val userWithHashedPassword = user.copy(password = hashedPassword)
+
           val insertUserAction =
             sqlu"""
-              INSERT INTO users (user_id, username, password_hash)
-              VALUES (uuid(${user.uuid}), ${user.username}, ${user.password})
-              ON CONFLICT (user_id) DO NOTHING
-            """
+                     INSERT INTO users (user_id, username, password_hash)
+                     VALUES (uuid(${userWithHashedPassword.uuid}), ${userWithHashedPassword.username}, ${userWithHashedPassword.password})
+                     ON CONFLICT (user_id) DO NOTHING
+                   """
 
           val insertFuture: Future[Int] = db.run(insertUserAction)
 
@@ -47,7 +51,7 @@ object UserRegistry {
             case Success(rowsAffected) =>
               if (rowsAffected > 0) {
                 replyTo ! ActionPerformed(s"User ${user.uuid} created.")
-                context.self ! UpdateRegistry(user)
+                context.self ! UpdateRegistry(userWithHashedPassword)
               } else {
                 replyTo ! ActionPerformed(s"User ${user.uuid} already exists.")
               }
@@ -114,6 +118,17 @@ object UserRegistry {
               replyTo ! GetUserPortfoliosResponse(Seq.empty)
           }
 
+          Behaviors.same
+
+        case AuthenticateUser(loginRequest, replyTo) =>
+          users.find(_.username == loginRequest.username) match {
+            case Some(user) if JwtUtils.verifyPassword(loginRequest.password, user.password) =>
+              val token = JwtUtils.createToken(user.uuid)
+              val userWithoutPassword = user.copy(password = "")
+              replyTo ! AuthenticationResponse(Some(token), Some(userWithoutPassword))
+            case _ =>
+              replyTo ! AuthenticationResponse(None, None)
+          }
           Behaviors.same
       }
     }

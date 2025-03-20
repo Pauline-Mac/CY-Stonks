@@ -32,6 +32,10 @@ lazy val root = (project in file(".")).
       "com.typesafe.slick" %% "slick-hikaricp" % "3.4.1",
       "org.postgresql" % "postgresql" % "42.3.1",
       "com.typesafe" % "config" % "1.4.1",
+      "com.github.jwt-scala" %% "jwt-core" % "9.4.5",
+      "com.pauldijou" %% "jwt-core" % "5.0.0",
+      "com.pauldijou" %% "jwt-spray-json" % "5.0.0",
+      "com.github.jwt-scala" %% "jwt-core" % "9.0.5",
 
 
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
