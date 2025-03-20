@@ -17,7 +17,8 @@ export default function PortfolioPage(): React.ReactElement {
     const handleCreatePortfolio = async () => {
         if (!newPortfolioName.trim()) return;
 
-        const userUuid = localStorage.getItem('userUuid');
+        // Utilisez la clé 'uuid' au lieu de 'userUuid'
+        const userUuid = localStorage.getItem('uuid');
         if (!userUuid) {
             alert('UUID utilisateur non trouvé dans le localStorage.');
             return;
